@@ -57,9 +57,9 @@ export interface Ancient {
 
 // 对话消息：与古人对话的单条消息
 export interface ChatMessage {
-  role: 'user' | 'assistant'; // 发送角色
+  role: 'user' | 'ancient'; // 发送角色：user=用户，ancient=古人
   content: string; // 消息内容
-  timestamp: string; // 时间戳
+  timestamp?: string; // 时间戳（可选）
 }
 
 // 统一 API 响应格式

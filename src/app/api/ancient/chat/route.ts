@@ -141,11 +141,11 @@ ${ancient.promptHint}
 5. 回答简洁有韵味，不宜过长`
 
   // 组装消息列表：system + 历史对话 + 当前消息
-  // 将前端 role 映射为 OpenAI 格式：user → user, ancient/assistant → assistant
+  // 将前端 role 映射为 OpenAI 格式：user → user, ancient → assistant
   const apiMessages = [
     { role: 'system', content: systemPrompt },
     ...messages.map((m) => ({
-      role: m.role === 'ancient' || m.role === 'assistant' ? 'assistant' : 'user',
+      role: (m.role === 'ancient' ? 'assistant' : 'user') as 'assistant' | 'user',
       content: m.content,
     })),
     { role: 'user', content: message },
