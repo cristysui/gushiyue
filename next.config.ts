@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // 确保构建时读取环境变量（不打缓存）
+  generateBuildId: () => Date.now().toString(),
 };
 
 export default nextConfig;
