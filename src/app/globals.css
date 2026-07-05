@@ -1,26 +1,177 @@
 @import "tailwindcss";
 
+/* ===== 新国风游戏化主题 ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-paper: #f5f1e8;
+  --color-paper-dark: #ebe5d6;
+  --color-ink: #2d2a26;
+  --color-ink-light: #5c544a;
+  --color-muted: #8a8074;
+  --color-vermillion: #c44536;
+  --color-gold: #b8860b;
+  --color-jade: #6b8e6b;
+  --color-sky: #87a8b5;
+  --color-border: #d6cfc0;
+  --color-card: #fdfbf6;
+  --color-scroll-bg: #f4ead4;
+  --color-scroll-edge: #8b6914;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-bg: var(--color-paper);
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-paper-dark);
+  --color-ink: var(--color-ink);
+  --color-ink-light: var(--color-ink-light);
+  --color-muted: var(--color-muted);
+  --color-accent: var(--color-gold);
+  --color-accent2: var(--color-vermillion);
+  --color-vermillion: var(--color-vermillion);
+  --color-border: var(--color-border);
+  --color-jade: var(--color-jade);
+  --color-sky: var(--color-sky);
+  --color-card: var(--color-card);
+  --color-scroll: var(--color-scroll-bg);
+  --color-scroll-edge: var(--color-scroll-edge);
+  --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+@layer utilities {
+  .title-serif { font-family: var(--font-serif); }
+  
+  .ink-shadow {
+    box-shadow: 0 2px 8px rgba(45, 42, 38, 0.08), 0 8px 24px rgba(45, 42, 38, 0.04);
+  }
+  .ink-shadow-deep {
+    box-shadow: 0 4px 16px rgba(45, 42, 38, 0.12), 0 16px 48px rgba(45, 42, 38, 0.08);
+  }
+  .ink-border { border: 1px solid rgba(45, 42, 38, 0.08); }
+  
+  .seal {
+    background-color: var(--color-vermillion);
+    color: var(--color-card);
+    font-family: var(--font-serif);
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    box-shadow: 0 2px 4px rgba(196, 69, 54, 0.3);
+  }
+  
+  .paper-card {
+    background-color: var(--color-card);
+    background-image: linear-gradient(135deg, rgba(245, 241, 232, 0.5) 0%, transparent 100%);
+  }
+
+  /* 游戏化图标按钮 */
+  .game-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+    filter: drop-shadow(0 2px 6px rgba(45, 42, 38, 0.15));
+  }
+  .game-icon:hover {
+    transform: scale(1.12) translateY(-4px);
+    filter: drop-shadow(0 6px 16px rgba(45, 42, 38, 0.2));
+  }
+  .game-icon:active {
+    transform: scale(1.05) translateY(-2px);
+  }
+  
+  /* 浮动动画 */
+  @keyframes float-gentle {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+  .animate-float {
+    animation: float-gentle 3s ease-in-out infinite;
+  }
+  
+  /* 脉冲光圈 */
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+  .pulse-ring::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--color-gold);
+    animation: pulse-ring 2s ease-out infinite;
+  }
+  
+  /* 卷轴展开动画 */
+  @keyframes scroll-unroll {
+    0% { transform: scaleY(0); opacity: 0; }
+    100% { transform: scaleY(1); opacity: 1; }
+  }
+  .animate-scroll-open {
+    transform-origin: top center;
+    animation: scroll-unroll 0.4s ease-out forwards;
+  }
+  
+  /* 弹窗淡入 */
+  @keyframes modal-fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .animate-modal-in {
+    animation: modal-fade-in 0.3s ease-out forwards;
+  }
+  
+  /* 对话气泡弹出 */
+  @keyframes bubble-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .animate-bubble {
+    animation: bubble-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  
+  /* 打字机光标 */
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .cursor-blink::after {
+    content: '▎';
+    animation: blink 1s step-end infinite;
+    color: var(--color-gold);
+  }
+  
+  /* 滚动条 */
+  .ink-scroll::-webkit-scrollbar { width: 5px; }
+  .ink-scroll::-webkit-scrollbar-track { background: transparent; }
+  .ink-scroll::-webkit-scrollbar-thumb {
+    background: rgba(45, 42, 38, 0.12);
+    border-radius: 3px;
+  }
+  
+  /* 热点提示标记 */
+  .hotspot-dot {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-vermillion);
+    border: 2px solid var(--color-card);
+    box-shadow: 0 1px 3px rgba(196, 69, 54, 0.4);
+  }
 }

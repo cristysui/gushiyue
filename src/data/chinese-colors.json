@@ -1,0 +1,182 @@
+[
+  {
+    "name": "天青",
+    "hex": "#4E8CA8",
+    "pinyin": "tiān qīng",
+    "description": "雨过天青之色，相传柴窑瓷器\"雨过天青云破处\"即此色，淡蓝而含青韵。"
+  },
+  {
+    "name": "月白",
+    "hex": "#D6ECF0",
+    "pinyin": "yuè bái",
+    "description": "月光洒落之色，微蓝近白，清冷淡雅，宋人喜以此色制瓷。"
+  },
+  {
+    "name": "黛蓝",
+    "hex": "#425066",
+    "pinyin": "dài lán",
+    "description": "如远山眉黛之深蓝，沉静幽远，似雨后山峦之色。"
+  },
+  {
+    "name": "胭脂",
+    "hex": "#9D2933",
+    "pinyin": "yān zhi",
+    "description": "取自红蓝花之红色，古时女子妆容之色，艳而不俗。"
+  },
+  {
+    "name": "朱砂",
+    "hex": "#FF461F",
+    "pinyin": "zhū shā",
+    "description": "辰砂矿物之色，大红鲜亮，古人用以书符点唇，亦为丹青之本。"
+  },
+  {
+    "name": "赭石",
+    "hex": "#845A33",
+    "pinyin": "zhě shí",
+    "description": "赤褐色矿物之色，沉稳厚重，为传统国画主要颜料之一。"
+  },
+  {
+    "name": "藤黄",
+    "hex": "#FFB61E",
+    "pinyin": "téng huáng",
+    "description": "取自海藤树树脂，明黄鲜亮，传统绘画重要黄色颜料。"
+  },
+  {
+    "name": "石绿",
+    "hex": "#1BD1A5",
+    "pinyin": "shí lǜ",
+    "description": "孔雀石研磨之色，青翠欲滴，国画青绿山水之主色。"
+  },
+  {
+    "name": "墨灰",
+    "hex": "#75878A",
+    "pinyin": "mò huī",
+    "description": "浓墨渐淡之灰，含青韵于其间，如烟雨朦胧之色。"
+  },
+  {
+    "name": "藕荷",
+    "hex": "#C4A4CB",
+    "pinyin": "ǒu hé",
+    "description": "莲藕之花的浅紫色，柔美温婉，淡雅含蓄。"
+  },
+  {
+    "name": "豆青",
+    "hex": "#95C9B3",
+    "pinyin": "dòu qīng",
+    "description": "如青豆之色，浅绿含黄，清新淡雅，瓷器常见此色。"
+  },
+  {
+    "name": "藏蓝",
+    "hex": "#2B3A67",
+    "pinyin": "zàng lán",
+    "description": "深邃之蓝，沉如夜空，稳重大方，藏地服饰常用之色。"
+  },
+  {
+    "name": "妃色",
+    "hex": "#ED5736",
+    "pinyin": "fēi sè",
+    "description": "杨妃之色，红中带橘，娇艳明丽，如少女含羞之颊。"
+  },
+  {
+    "name": "檀色",
+    "hex": "#B25D25",
+    "pinyin": "tán sè",
+    "description": "紫檀木之色，褐中含红，温润古朴，如经年之木。"
+  },
+  {
+    "name": "鸦青",
+    "hex": "#424C50",
+    "pinyin": "yā qīng",
+    "description": "乌鸦羽毛之色，青黑含灰，沉郁内敛，如暮色苍茫。"
+  },
+  {
+    "name": "雪青",
+    "hex": "#B0A4E3",
+    "pinyin": "xuě qīng",
+    "description": "雪映青天之淡紫，清雅柔和，如初春雪后之天光。"
+  },
+  {
+    "name": "黛绿",
+    "hex": "#426666",
+    "pinyin": "dài lǜ",
+    "description": "青黑之绿，深沉如远山，幽静深邃，似古松之影。"
+  },
+  {
+    "name": "绛紫",
+    "hex": "#875F9A",
+    "pinyin": "jiàng zǐ",
+    "description": "暗红之紫，庄重典雅，古时三品以上官员服色。"
+  },
+  {
+    "name": "鹅黄",
+    "hex": "#FFF143",
+    "pinyin": "é huáng",
+    "description": "初生小鹅绒毛之色，嫩黄明快，如初春柳芽新发。"
+  },
+  {
+    "name": "缃色",
+    "hex": "#F0C239",
+    "pinyin": "xiāng sè",
+    "description": "浅黄丝帛之色，温润柔和，如秋日稻穗之金黄。"
+  },
+  {
+    "name": "茶白",
+    "hex": "#F3F9F1",
+    "pinyin": "chá bái",
+    "description": "如茶汤之淡白，微微泛黄，素雅清淡，似宣纸之初。"
+  },
+  {
+    "name": "丁香",
+    "hex": "#CCA4E3",
+    "pinyin": "dīng xiāng",
+    "description": "丁香花之淡紫，温柔清雅，如烟如梦，似雾中花影。"
+  },
+  {
+    "name": "栗色",
+    "hex": "#60281E",
+    "pinyin": "lì sè",
+    "description": "栗壳之深褐，沉稳厚重，如秋日落叶归根之色。"
+  },
+  {
+    "name": "苍绿",
+    "hex": "#42602D",
+    "pinyin": "cāng lǜ",
+    "description": "老树苍苔之绿，深沉含蓄，如古林深处的幽然之色。"
+  },
+  {
+    "name": "玄色",
+    "hex": "#3D3B4F",
+    "pinyin": "xuán sè",
+    "description": "赤黑之色，深邃幽玄，古以玄为天之色，神秘庄重。"
+  },
+  {
+    "name": "缁色",
+    "hex": "#3D3B3D",
+    "pinyin": "zī sè",
+    "description": "帛黑色之深灰，沉静肃穆，僧尼所服之色。"
+  },
+  {
+    "name": "彤色",
+    "hex": "#F05654",
+    "pinyin": "tóng sè",
+    "description": "红霞之色，鲜亮温暖，如朝霞初升，彤云满天。"
+  },
+  {
+    "name": "赭",
+    "hex": "#955539",
+    "pinyin": "zhě",
+    "description": "红褐色之单字，赤土之色，古朴自然，为最早矿物颜料。"
+  },
+  {
+    "name": "碧色",
+    "hex": "#48C0A3",
+    "pinyin": "bì sè",
+    "description": "玉石之青绿，清澈透亮，如\"碧水东流\"，清莹润泽。"
+  },
+  {
+    "name": "檀口",
+    "hex": "#DB5A6B",
+    "pinyin": "tán kǒu",
+    "description": "点檀之唇色，红中含粉，娇柔妩媚，如春花初绽。"
+  }
+]
