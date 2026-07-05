@@ -24,16 +24,17 @@ export const env = {
 }
 
 /**
- * 获取 Supabase 项目 URL（浏览器端可用，NEXT_PUBLIC_ 前缀）
+ * 获取 Supabase 项目 URL（浏览器端可用）
+ * 优先环境变量，回退到默认值（Cloudflare Pages 静态导出时环境变量不可用）
  */
 export function getSupabaseUrl(): string {
-  return process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  return process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pnbrlpsblvgkvbokvbkv.supabase.co'
 }
 
 /**
- * 获取 Supabase Anon Key（浏览器端可用，NEXT_PUBLIC_ 前缀）
- * 用于调用 Edge Function 时作为 apikey header
+ * 获取 Supabase Anon Key（浏览器端可用）
+ * anon key 是公开密钥，受 RLS 策略保护，可安全暴露在前端
  */
 export function getSupabaseAnonKey(): string {
-  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_liBkYUhKjK0tWqoq5R-ZoQ_f4eeX6bo'
 }

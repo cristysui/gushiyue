@@ -10,8 +10,10 @@
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+// Supabase 公开配置（anon key 受 RLS 保护，可安全暴露在前端）
+// 优先读取环境变量，回退到默认值（用于 Cloudflare Pages 静态导出）
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pnbrlpsblvgkvbokvbkv.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_liBkYUhKjK0tWqoq5R-ZoQ_f4eeX6bo'
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
 /**
