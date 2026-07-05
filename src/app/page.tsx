@@ -49,8 +49,10 @@ export default function HomePage() {
   // 拉取数据
   useEffect(() => {
     let active = true;
+    // 获取用户本地时区，传给 API 以确保线上时间正确
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     Promise.all([
-      fetch("/api/today").then(r => r.json()),
+      fetch(`/api/today?tz=${encodeURIComponent(tz)}`).then(r => r.json()),
       fetch("/api/ancient/random").then(r => r.json()),
     ]).then(([todayJson, ancientJson]) => {
       if (!active) return;
@@ -105,11 +107,11 @@ export default function HomePage() {
         <div className="flex items-center gap-3">
           {today && (
             <div className="flex items-center gap-3 text-sm">
-              <div className="rounded-lg bg-card/70 px-3 py-1.5 ink-border backdrop-blur-sm">
+              <div className="rounded-lg bg-card/70 px-3 py-1.5 ink-border">
                 <span className="title-serif text-ink">{today.date}</span>
                 <span className="ml-2 text-xs text-muted">{today.lunarDate}</span>
               </div>
-              <div className="rounded-lg border border-vermillion/20 bg-vermillion/5 px-3 py-1.5 backdrop-blur-sm">
+              <div className="rounded-lg border border-vermillion/20 bg-vermillion/5 px-3 py-1.5">
                 <span className="title-serif text-accent2">{today.jieqi}</span>
               </div>
             </div>
@@ -117,12 +119,12 @@ export default function HomePage() {
           {/* 用户登录/登出按钮 */}
           {user ? (
             <div className="flex items-center gap-2">
-              <span className="rounded-lg bg-card/70 px-2.5 py-1.5 text-xs text-ink-light ink-border backdrop-blur-sm">
+              <span className="rounded-lg bg-card/70 px-2.5 py-1.5 text-xs text-ink-light ink-border">
                 {user.email}
               </span>
               <button
                 onClick={() => signOut()}
-                className="rounded-lg border border-border/50 bg-card/70 px-2.5 py-1.5 text-xs text-muted backdrop-blur-sm hover:text-ink"
+                className="rounded-lg border border-border/50 bg-card/70 px-2.5 py-1.5 text-xs text-muted hover:text-ink"
               >
                 登出
               </button>
@@ -130,7 +132,7 @@ export default function HomePage() {
           ) : (
             <button
               onClick={() => setAuthOpen(true)}
-              className="rounded-lg bg-card/70 px-3 py-1.5 text-xs text-ink ink-border backdrop-blur-sm hover:bg-card"
+              className="rounded-lg bg-card/70 px-3 py-1.5 text-xs text-ink ink-border hover:bg-card"
             >
               登入
             </button>
@@ -152,18 +154,18 @@ export default function HomePage() {
             >
               <div className="relative">
                 {/* 脉冲提示 */}
-                <div className="pulse-ring relative flex h-14 w-14 items-center justify-center rounded-full bg-card/90 ink-border backdrop-blur-sm">
+                <div className="pulse-ring relative flex h-14 w-14 items-center justify-center rounded-full bg-card/90 ink-border">
                   <span className="title-serif text-2xl font-bold text-accent2">
                     {ancient.name[0]}
                   </span>
                 </div>
                 {/* 名牌 */}
-                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border backdrop-blur-sm opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
                   {ancient.name} · {ancient.dynasty}
                 </div>
                 {/* 正在做什么 */}
                 {today?.currentShichen && (
-                  <div className="animate-float absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-card/90 px-2.5 py-1 text-[11px] text-muted ink-border backdrop-blur-sm">
+                  <div className="animate-float absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-card/90 px-2.5 py-1 text-[11px] text-muted ink-border">
                     {today.currentShichen.activity}
                   </div>
                 )}
@@ -178,7 +180,7 @@ export default function HomePage() {
             style={{ top: "8%", left: "8%" }}
             aria-label="万年历"
           >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border backdrop-blur-sm">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                 <rect x="3" y="5" width="20" height="18" rx="2" stroke="var(--color-gold)" strokeWidth="1.8"/>
                 <line x1="3" y1="10" x2="23" y2="10" stroke="var(--color-gold)" strokeWidth="1.5"/>
@@ -192,7 +194,7 @@ export default function HomePage() {
               </svg>
               <span className="hotspot-dot" />
             </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border backdrop-blur-sm opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
               万年历
             </div>
           </button>
@@ -204,7 +206,7 @@ export default function HomePage() {
             style={{ top: "12%", right: "10%" }}
             aria-label="节气生活"
           >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border backdrop-blur-sm">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                 <path d="M13 3 C13 3, 8 8, 8 13 C8 17, 10 20, 13 20 C16 20, 18 17, 18 13 C18 8, 13 3, 13 3 Z"
                   stroke="var(--color-jade)" strokeWidth="1.5" fill="rgba(107,142,107,0.1)"/>
@@ -212,7 +214,7 @@ export default function HomePage() {
                 <path d="M10 12 Q13 10, 16 12" stroke="var(--color-jade)" strokeWidth="1" fill="none"/>
               </svg>
             </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border backdrop-blur-sm opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
               节气生活
             </div>
           </button>
@@ -224,7 +226,7 @@ export default function HomePage() {
             style={{ bottom: "12%", left: "12%" }}
             aria-label="时令蔬果"
           >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border backdrop-blur-sm">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                 <path d="M13 22 L13 14" stroke="var(--color-jade)" strokeWidth="1.5" strokeLinecap="round"/>
                 <path d="M13 14 C10 12, 8 10, 9 8 C11 9, 13 11, 13 14" fill="var(--color-jade)" opacity="0.6"/>
@@ -233,7 +235,7 @@ export default function HomePage() {
                 <ellipse cx="13" cy="22" rx="6" ry="1.5" fill="var(--color-gold)" opacity="0.2"/>
               </svg>
             </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border backdrop-blur-sm opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
               时令蔬果
             </div>
           </button>
@@ -245,7 +247,7 @@ export default function HomePage() {
             style={{ top: "30%", right: "6%" }}
             aria-label="当月花信"
           >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border backdrop-blur-sm">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                 <circle cx="13" cy="10" r="3" fill="var(--color-vermillion)" opacity="0.6"/>
                 <circle cx="10" cy="13" r="3" fill="var(--color-vermillion)" opacity="0.5"/>
@@ -255,7 +257,7 @@ export default function HomePage() {
                 <line x1="13" y1="19" x2="13" y2="24" stroke="var(--color-jade)" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border backdrop-blur-sm opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
               当月花信
             </div>
           </button>
@@ -267,7 +269,7 @@ export default function HomePage() {
             style={{ bottom: "15%", right: "12%" }}
             aria-label="每日一诗"
           >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border backdrop-blur-sm">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                 <path d="M8 6 L8 20 Q8 22, 10 22 L18 22" stroke="var(--color-ink)" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
                 <path d="M8 6 Q8 4, 10 4 L16 4 Q18 4, 18 6 L18 20 Q18 22, 16 22" stroke="var(--color-ink)" strokeWidth="1.5" fill="rgba(253,251,246,0.5)"/>
@@ -276,7 +278,7 @@ export default function HomePage() {
                 <line x1="11" y1="15" x2="14" y2="15" stroke="var(--color-ink)" strokeWidth="1" opacity="0.5"/>
               </svg>
             </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border backdrop-blur-sm opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
               每日一诗
             </div>
           </button>
@@ -289,7 +291,7 @@ export default function HomePage() {
               style={{ top: "25%", left: "40%" }}
               aria-label="当下时辰"
             >
-              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-card/85 ink-border backdrop-blur-sm">
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-card/85 ink-border">
                 <div className="text-center">
                   <p className="title-serif text-base font-bold text-ink leading-none">
                     {today.currentShichen.name}
@@ -299,7 +301,7 @@ export default function HomePage() {
                   </p>
                 </div>
               </div>
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border backdrop-blur-sm opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
                 {today.currentShichen.meridian}
               </div>
             </button>
@@ -491,7 +493,7 @@ export default function HomePage() {
       {ancient && !chatOpen && (
         <button
           onClick={handleReplaceAncient}
-          className="fixed bottom-5 right-5 z-20 flex items-center gap-2 rounded-full bg-card/90 px-4 py-2.5 text-sm text-ink ink-border ink-shadow backdrop-blur-sm transition-all hover:bg-card"
+          className="fixed bottom-5 right-5 z-20 flex items-center gap-2 rounded-full bg-card/90 px-4 py-2.5 text-sm text-ink ink-border ink-shadow transition-all hover:bg-card"
         >
           <span className="title-serif">換一位古人</span>
           <span className="text-muted">→</span>

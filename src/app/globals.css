@@ -82,13 +82,16 @@ body {
     cursor: pointer;
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
     filter: drop-shadow(0 2px 6px rgba(45, 42, 38, 0.15));
+    /* GPU 加速，避免鼠标移动时重绘闪烁 */
+    will-change: transform;
+    transform: translateZ(0);
   }
   .game-icon:hover {
-    transform: scale(1.12) translateY(-4px);
+    transform: scale(1.12) translateY(-4px) translateZ(0);
     filter: drop-shadow(0 6px 16px rgba(45, 42, 38, 0.2));
   }
   .game-icon:active {
-    transform: scale(1.05) translateY(-2px);
+    transform: scale(1.05) translateY(-2px) translateZ(0);
   }
   
   /* 浮动动画 */

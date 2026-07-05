@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { getBrowserClient } from "./supabase";
 
@@ -29,7 +29,12 @@ export function useAuth(): AuthState & {
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  const client: SupabaseClient | null = getBrowserClient();
+  // 使用 ref 缓存 client，避免每次渲染都重新获取
+  const clientRef = useRef<SupabaseClient | null>(null);
+  if (clientRef.current === null) {
+    clientRef.current = getBrowserClient();
+  }
+  const client = clientRef.current;
 
   useEffect(() => {
     if (!client) {
@@ -37,8 +42,11 @@ export function useAuth(): AuthState & {
       return;
     }
 
+    let mounted = true;
+
     // 获取当前会话
     client.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
       setUser(session?.user ?? null);
       setAccessToken(session?.access_token ?? null);
       setLoading(false);
@@ -46,11 +54,13 @@ export function useAuth(): AuthState & {
 
     // 监听认证状态变化
     const { data: listener } = client.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
       setUser(session?.user ?? null);
       setAccessToken(session?.access_token ?? null);
     });
 
     return () => {
+      mounted = false;
       listener.subscription.unsubscribe();
     };
   }, [client]);
