@@ -7,13 +7,14 @@ import AuthModal from "@/components/AuthModal";
 import ColorBadge from "@/components/ColorBadge";
 import TagList from "@/components/TagList";
 import { useAuth } from "@/lib/auth";
+import { computeTodayData } from "@/lib/today-client";
+import { getRandomAncientClient } from "@/lib/ancients-client";
 
 // ===== 类型定义 =====
 interface RecommendedColor { name: string; hex: string }
 interface JieqiInfo {
   name: string; period: string; intro: string;
   customs: string[]; activities: string[]; foods: string[];
-  poetry: { title: string; author: string; content: string }[];
 }
 interface CurrentShichen {
   name: string; time: string; meridian: string;
@@ -21,7 +22,7 @@ interface CurrentShichen {
 }
 interface DailyPoem { title: string; author: string; content: string }
 interface TodayData {
-  date: string; lunarDate: string; jieqi: string; jieqiInfo: JieqiInfo;
+  date: string; lunarDate: string; jieqi: string; jieqiInfo: JieqiInfo | null;
   wuxing: string; todayYi: string[]; todayJi: string[];
   recommendedColors: RecommendedColor[];
   seasonalVegetables: string[]; seasonalFruits: string[];
@@ -46,30 +47,15 @@ export default function HomePage() {
 
   const { user, accessToken, signIn, signUp, signOut } = useAuth();
 
-  // 拉取数据
+  // 客户端直接计算今日数据 + 随机古人（无需 API）
   useEffect(() => {
-    let active = true;
-    // 获取用户本地时区，传给 API 以确保线上时间正确
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    Promise.all([
-      fetch(`/api/today?tz=${encodeURIComponent(tz)}`).then(r => r.json()),
-      fetch("/api/ancient/random").then(r => r.json()),
-    ]).then(([todayJson, ancientJson]) => {
-      if (!active) return;
-      setToday(todayJson.data ?? todayJson);
-      setAncient(ancientJson.data ?? ancientJson);
-    }).catch(() => {}).finally(() => {
-      if (active) setLoading(false);
-    });
-    return () => { active = false };
+    setToday(computeTodayData());
+    setAncient(getRandomAncientClient());
+    setLoading(false);
   }, []);
 
-  const handleReplaceAncient = async () => {
-    try {
-      const res = await fetch("/api/ancient/random");
-      const json = await res.json();
-      setAncient(json.data ?? json);
-    } catch {}
+  const handleReplaceAncient = () => {
+    setAncient(getRandomAncientClient());
   };
 
   if (loading) {

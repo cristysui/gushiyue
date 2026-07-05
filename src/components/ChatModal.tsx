@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { getBrowserClient } from "@/lib/supabase";
+import { fetchChatHistory, saveChatMessage } from "@/lib/db-client";
+import { getSupabaseUrl, getSupabaseAnonKey } from "@/lib/env";
 
 interface Ancient {
   id: string; name: string; dynasty: string; birthYear: string;
@@ -14,7 +17,7 @@ interface ChatModalProps {
   onClose: () => void;
   ancient: Ancient | null;
   currentShichenActivity?: string;
-  /** 用户登录后的 access_token，用于持久化对话历史 */
+  /** 用户登录后的 access_token，用于判断登录状态 */
   accessToken?: string | null;
 }
 
@@ -22,6 +25,7 @@ interface ChatModalProps {
  * 古人对话弹窗
  * 点击庭院中的古人后弹出
  * 登录后自动加载历史对话并持久化新消息
+ * AI 对话通过 Supabase Edge Function 代理调用 DeepSeek API
  */
 export default function ChatModal({
   open, onClose, ancient, currentShichenActivity, accessToken,
@@ -35,19 +39,16 @@ export default function ChatModal({
   const isLoggedIn = !!accessToken;
 
   /**
-   * 从 Supabase 加载与该古人的历史对话
+   * 从 Supabase 直连加载与该古人的历史对话
    */
-  const loadHistory = useCallback(async (ancientId: string, token: string) => {
+  const loadHistory = useCallback(async (ancientId: string) => {
+    const client = getBrowserClient();
+    if (!client) return null;
     try {
-      const res = await fetch(`/api/history?ancient_id=${ancientId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const json = await res.json();
-      const history = json.data ?? [];
-      if (Array.isArray(history) && history.length > 0) {
-        // 将数据库记录转换为 ChatMessage 格式
-        return history.map((record: { role: string; content: string }) => ({
-          role: record.role === "user" ? "user" as const : "ancient" as const,
+      const history = await fetchChatHistory(client, ancientId);
+      if (history.length > 0) {
+        return history.map((record) => ({
+          role: (record.role === "user" ? "user" : "ancient") as "user" | "ancient",
           content: record.content,
         }));
       }
@@ -58,41 +59,71 @@ export default function ChatModal({
   }, []);
 
   /**
-   * 将一条消息保存到 Supabase
+   * 将一条消息保存到 Supabase（直连）
    */
   const saveMessage = useCallback(async (
     ancientId: string,
     role: "user" | "ancient",
     content: string,
-    source: string,
-    token: string
+    source: string
   ) => {
-    try {
-      await fetch("/api/history", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ancientId, role, content, source }),
-      });
-    } catch {
-      // 保存失败不影响对话体验
+    const client = getBrowserClient();
+    if (!client) return;
+    await saveChatMessage(client, ancientId, role, content, source);
+  }, []);
+
+  /**
+   * 调用 Supabase Edge Function 进行 AI 对话
+   */
+  const callAiChat = useCallback(async (
+    ancientId: string,
+    message: string,
+    history: ChatMessage[],
+    ancientData: Ancient
+  ) => {
+    const supabaseUrl = getSupabaseUrl();
+    if (!supabaseUrl) {
+      // Supabase 未配置，返回降级回复
+      return {
+        reply: `吾乃${ancientData.dynasty}${ancientData.name}。${ancientData.bio.slice(0, 50)}……`,
+        source: "mock",
+      };
     }
+
+    const client = getBrowserClient();
+    const { data: { session } } = await client?.auth.getSession() ?? { data: { session: null } };
+    const anonKey = getSupabaseAnonKey();
+
+    const res = await fetch(`${supabaseUrl}/functions/v1/ancient-chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: anonKey,
+        ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
+      body: JSON.stringify({
+        ancientId,
+        message,
+        messages: history.map((m) => ({ role: m.role, content: m.content })),
+        ancient: ancientData,
+      }),
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || "对话请求失败");
+    return json.data as { reply: string; source: string };
   }, []);
 
   // 古人变化或弹窗打开时初始化对话
   useEffect(() => {
     if (!ancient || !open) return;
 
-    // 已登录：尝试加载历史对话
     if (accessToken) {
+      // 已登录：尝试加载历史对话
       setHistoryLoaded(false);
-      loadHistory(ancient.id, accessToken).then((history) => {
+      loadHistory(ancient.id).then((history) => {
         if (history && history.length > 0) {
           setMessages(history);
         } else {
-          // 无历史记录，使用问候语
           const greeting = currentShichenActivity
             ? `吾乃${ancient.dynasty}${ancient.name}。方才${currentShichenActivity}，见你来此，甚好。`
             : `吾乃${ancient.dynasty}${ancient.name}。${ancient.bio}`;
@@ -124,28 +155,16 @@ export default function ChatModal({
 
     // 已登录：保存用户消息
     if (accessToken) {
-      saveMessage(ancient.id, "user", text, "user", accessToken);
+      saveMessage(ancient.id, "user", text, "user");
     }
 
     try {
-      const res = await fetch("/api/ancient/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ancientId: ancient.id,
-          message: text,
-          messages: messages.map((m) => ({ role: m.role, content: m.content })),
-        }),
-      });
-      const json = await res.json();
-      const replyData = json.data ?? json;
-      const reply = replyData.reply ?? replyData.content ?? replyData.message ?? "……";
-      const source = replyData.source ?? "ai";
-      setMessages((prev) => [...prev, { role: "ancient", content: reply }]);
+      const result = await callAiChat(ancient.id, text, messages, ancient);
+      setMessages((prev) => [...prev, { role: "ancient", content: result.reply }]);
 
       // 已登录：保存古人回复
       if (accessToken) {
-        saveMessage(ancient.id, "ancient", reply, source, accessToken);
+        saveMessage(ancient.id, "ancient", result.reply, result.source);
       }
     } catch {
       setMessages((prev) => [...prev, { role: "ancient", content: "（叹息）此刻思绪难平，稍后再叙。" }]);
@@ -172,7 +191,6 @@ export default function ChatModal({
           style={{ background: "linear-gradient(135deg, rgba(184,134,11,0.06) 0%, transparent 100%)" }}
         >
           <div className="flex items-start gap-3">
-            {/* 古人头像占位 */}
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface title-serif text-xl font-bold text-accent"
               style={{ border: "2px solid var(--color-gold)" }}
             >
@@ -203,7 +221,6 @@ export default function ChatModal({
             >
               ✕
             </button>
-            {/* 登录状态指示 */}
             <span className={`text-[10px] ${isLoggedIn ? "text-jade" : "text-muted/60"}`}>
               {isLoggedIn ? "● 对话已记录" : "○ 游客模式"}
             </span>

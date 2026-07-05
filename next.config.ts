@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Cloudflare Pages 部署需要静态图片优化关闭
+  // 纯静态导出，部署到 Cloudflare Pages
+  output: "export",
   images: {
     unoptimized: true,
   },
