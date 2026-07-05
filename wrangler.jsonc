@@ -1,6 +1,5 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "main": ".open-next/worker.js",
   "name": "gushiyue",
   "compatibility_date": "2026-05-16",
   "compatibility_flags": [
