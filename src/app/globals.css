@@ -15,6 +15,7 @@
   --color-card: #fdfbf6;
   --color-scroll-bg: #f4ead4;
   --color-scroll-edge: #8b6914;
+  --color-dark: #1c1917;
 }
 
 @theme inline {
@@ -33,6 +34,9 @@
   --color-card: var(--color-card);
   --color-scroll: var(--color-scroll-bg);
   --color-scroll-edge: var(--color-scroll-edge);
+  --color-dark: var(--color-dark);
+  --color-gold: var(--color-gold);
+  --color-paper: var(--color-paper);
   --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
   --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
@@ -143,6 +147,9 @@ body {
     100% { transform: scale(1); opacity: 1; }
   }
   .animate-bubble {
+    animation: bubble-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .animate-bubble-in {
     animation: bubble-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
   

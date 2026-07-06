@@ -1,39 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import ScrollModal from "@/components/ScrollModal";
 import ChatModal from "@/components/ChatModal";
 import AuthModal from "@/components/AuthModal";
 import ColorBadge from "@/components/ColorBadge";
 import TagList from "@/components/TagList";
+import FloatingHeader from "@/components/FloatingHeader";
 import { useAuth } from "@/lib/auth";
 import { computeTodayData } from "@/lib/today-client";
 import { getRandomAncientClient } from "@/lib/ancients-client";
+import type { TodayData } from "@/lib/types";
 
-// ===== 类型定义 =====
-interface RecommendedColor { name: string; hex: string }
-interface JieqiInfo {
-  name: string; period: string; intro: string;
-  customs: string[]; activities: string[]; foods: string[];
-}
-interface CurrentShichen {
-  name: string; time: string; meridian: string;
-  activity: string; suitable: string[]; avoid: string[];
-}
-interface DailyPoem { title: string; author: string; content: string }
-interface TodayData {
-  date: string; lunarDate: string; jieqi: string; jieqiInfo: JieqiInfo | null;
-  wuxing: string; todayYi: string[]; todayJi: string[];
-  recommendedColors: RecommendedColor[];
-  seasonalVegetables: string[]; seasonalFruits: string[];
-  flowers: string[]; currentShichen: CurrentShichen; dailyPoem: DailyPoem;
-}
+// 3D 场景动态导入（避免 SSR，静态导出兼容）
+const GardenScene = dynamic(() => import("@/components/scene/GardenScene"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="relative h-16 w-16">
+        <div className="h-16 w-16 rounded-full border-2 border-border/40" />
+        <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-t-2 border-accent" />
+      </div>
+    </div>
+  ),
+});
+
 interface Ancient {
   id: string; name: string; dynasty: string; birthYear: string;
   title: string; personality: string; bio: string;
   famousWorks: string[]; speakingStyle: string; promptHint: string;
 }
-interface ChatMessage { role: "user" | "ancient"; content: string }
 
 type ModalType = "calendar" | "jieqi" | "poem" | "garden" | "flowers" | "shichen" | null;
 
@@ -44,15 +41,39 @@ export default function HomePage() {
   const [chatOpen, setChatOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [hint, setHint] = useState<string | null>(null);
 
   const { user, accessToken, signIn, signUp, signOut } = useAuth();
 
-  // 客户端直接计算今日数据 + 随机古人（无需 API）
   useEffect(() => {
     setToday(computeTodayData());
     setAncient(getRandomAncientClient());
     setLoading(false);
   }, []);
+
+  // 3D 场景交互回调
+  const handleReachAncient = useCallback(() => {
+    setHint("靠近了古人，点击可交谈");
+    // 自动打开对话
+    setTimeout(() => setChatOpen(true), 400);
+  }, []);
+
+  const handleReachPoetry = useCallback(() => {
+    setHint("走到了诗碑前");
+    setTimeout(() => setActiveModal("poem"), 400);
+  }, []);
+
+  const handleReachJieqi = useCallback(() => {
+    setHint("来到了节气碑前");
+    setTimeout(() => setActiveModal("jieqi"), 400);
+  }, []);
+
+  // 提示自动消失
+  useEffect(() => {
+    if (!hint) return;
+    const timer = setTimeout(() => setHint(null), 3000);
+    return () => clearTimeout(timer);
+  }, [hint]);
 
   const handleReplaceAncient = () => {
     setAncient(getRandomAncientClient());
@@ -71,242 +92,101 @@ export default function HomePage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* ===== 庭院主视觉 ===== */}
+    <div className="fixed inset-0 overflow-hidden">
+      {/* ===== 3D 庭院场景（全屏底图）===== */}
       <div className="absolute inset-0">
-        <img
-          src="/courtyard-main.jpg"
-          alt="中式庭院"
-          className="h-full w-full object-cover"
+        <GardenScene
+          ancient={ancient}
+          onReachAncient={handleReachAncient}
+          onReachPoetry={handleReachPoetry}
+          onReachJieqi={handleReachJieqi}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-paper/10 via-transparent to-paper/80" />
       </div>
 
-      {/* ===== 顶部信息栏 ===== */}
-      <header className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-3">
-          <span className="seal">古時月</span>
-          <span className="title-serif text-sm tracking-widest text-ink-light/80">
-            今月曾經照古人
-          </span>
-        </div>
-        <div className="flex items-center gap-3">
-          {today && (
-            <div className="flex items-center gap-3 text-sm">
-              <div className="rounded-lg bg-card/70 px-3 py-1.5 ink-border">
-                <span className="title-serif text-ink">{today.date}</span>
-                <span className="ml-2 text-xs text-muted">{today.lunarDate}</span>
-              </div>
-              <div className="rounded-lg border border-vermillion/20 bg-vermillion/5 px-3 py-1.5">
-                <span className="title-serif text-accent2">{today.jieqi}</span>
-              </div>
-            </div>
-          )}
-          {/* 用户登录/登出按钮 */}
-          {user ? (
-            <div className="flex items-center gap-2">
-              <span className="rounded-lg bg-card/70 px-2.5 py-1.5 text-xs text-ink-light ink-border">
-                {user.email}
-              </span>
-              <button
-                onClick={() => signOut()}
-                className="rounded-lg border border-border/50 bg-card/70 px-2.5 py-1.5 text-xs text-muted hover:text-ink"
-              >
-                登出
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setAuthOpen(true)}
-              className="rounded-lg bg-card/70 px-3 py-1.5 text-xs text-ink ink-border hover:bg-card"
+      {/* ===== 透明浮动 Header ===== */}
+      <FloatingHeader today={today} />
+
+      {/* ===== 右上角：用户区 ===== */}
+      <div className="fixed right-3 top-14 z-30 flex items-center gap-2">
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="rounded-lg bg-dark/60 px-2.5 py-1.5 text-xs text-paper/80"
+              style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
             >
-              登入
-            </button>
-          )}
-        </div>
-      </header>
-
-      {/* ===== 庭院交互区 ===== */}
-      <main className="relative z-10 mx-auto max-w-5xl px-6" style={{ minHeight: "calc(100vh - 80px)" }}>
-        <div className="relative mx-auto" style={{ maxWidth: "900px", aspectRatio: "16/9" }}>
-
-          {/* --- 古人坐在石桌旁 --- */}
-          {ancient && (
+              {user.email?.split("@")[0]}
+            </span>
             <button
-              onClick={() => setChatOpen(true)}
-              className="game-icon group absolute"
-              style={{ top: "48%", left: "55%" }}
-              aria-label={`与${ancient.name}对话`}
+              onClick={() => signOut()}
+              className="rounded-lg bg-dark/60 px-2.5 py-1.5 text-xs text-paper/60 hover:text-paper"
+              style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
             >
-              <div className="relative">
-                {/* 脉冲提示 */}
-                <div className="pulse-ring relative flex h-14 w-14 items-center justify-center rounded-full bg-card/90 ink-border">
-                  <span className="title-serif text-2xl font-bold text-accent2">
-                    {ancient.name[0]}
-                  </span>
-                </div>
-                {/* 名牌 */}
-                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
-                  {ancient.name} · {ancient.dynasty}
-                </div>
-                {/* 正在做什么 */}
-                {today?.currentShichen && (
-                  <div className="animate-float absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-card/90 px-2.5 py-1 text-[11px] text-muted ink-border">
-                    {today.currentShichen.activity}
-                  </div>
-                )}
-              </div>
+              登出
             </button>
-          )}
-
-          {/* --- 万年历（五行宜色 + 宜忌）--- */}
+          </div>
+        ) : (
           <button
-            onClick={() => setActiveModal("calendar")}
-            className="game-icon group absolute"
-            style={{ top: "8%", left: "8%" }}
-            aria-label="万年历"
+            onClick={() => setAuthOpen(true)}
+            className="rounded-lg bg-dark/60 px-3 py-1.5 text-xs text-paper hover:bg-dark/80"
+            style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
           >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <rect x="3" y="5" width="20" height="18" rx="2" stroke="var(--color-gold)" strokeWidth="1.8"/>
-                <line x1="3" y1="10" x2="23" y2="10" stroke="var(--color-gold)" strokeWidth="1.5"/>
-                <line x1="9" y1="2" x2="9" y2="7" stroke="var(--color-gold)" strokeWidth="1.8" strokeLinecap="round"/>
-                <line x1="17" y1="2" x2="17" y2="7" stroke="var(--color-gold)" strokeWidth="1.8" strokeLinecap="round"/>
-                <circle cx="9" cy="15" r="1.2" fill="var(--color-vermillion)"/>
-                <circle cx="13" cy="15" r="1.2" fill="var(--color-gold)"/>
-                <circle cx="17" cy="15" r="1.2" fill="var(--color-jade)"/>
-                <circle cx="9" cy="19" r="1.2" fill="var(--color-gold)"/>
-                <circle cx="13" cy="19" r="1.2" fill="var(--color-vermillion)"/>
-              </svg>
-              <span className="hotspot-dot" />
-            </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
-              万年历
-            </div>
+            登入
           </button>
+        )}
+      </div>
 
-          {/* --- 节气生活 --- */}
-          <button
-            onClick={() => setActiveModal("jieqi")}
-            className="game-icon group absolute"
-            style={{ top: "12%", right: "10%" }}
-            aria-label="节气生活"
-          >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <path d="M13 3 C13 3, 8 8, 8 13 C8 17, 10 20, 13 20 C16 20, 18 17, 18 13 C18 8, 13 3, 13 3 Z"
-                  stroke="var(--color-jade)" strokeWidth="1.5" fill="rgba(107,142,107,0.1)"/>
-                <line x1="13" y1="20" x2="13" y2="24" stroke="var(--color-jade)" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M10 12 Q13 10, 16 12" stroke="var(--color-jade)" strokeWidth="1" fill="none"/>
-              </svg>
-            </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
-              节气生活
-            </div>
-          </button>
-
-          {/* --- 时令蔬果（菜园区域）--- */}
-          <button
-            onClick={() => setActiveModal("garden")}
-            className="game-icon group absolute"
-            style={{ bottom: "12%", left: "12%" }}
-            aria-label="时令蔬果"
-          >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <path d="M13 22 L13 14" stroke="var(--color-jade)" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M13 14 C10 12, 8 10, 9 8 C11 9, 13 11, 13 14" fill="var(--color-jade)" opacity="0.6"/>
-                <path d="M13 14 C16 12, 18 10, 17 8 C15 9, 13 11, 13 14" fill="var(--color-jade)" opacity="0.6"/>
-                <path d="M13 14 C13 11, 14 9, 16 9 C16 11, 15 13, 13 14" fill="var(--color-jade)" opacity="0.5"/>
-                <ellipse cx="13" cy="22" rx="6" ry="1.5" fill="var(--color-gold)" opacity="0.2"/>
-              </svg>
-            </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
-              时令蔬果
-            </div>
-          </button>
-
-          {/* --- 当月花信 --- */}
-          <button
-            onClick={() => setActiveModal("flowers")}
-            className="game-icon group absolute"
-            style={{ top: "30%", right: "6%" }}
-            aria-label="当月花信"
-          >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <circle cx="13" cy="10" r="3" fill="var(--color-vermillion)" opacity="0.6"/>
-                <circle cx="10" cy="13" r="3" fill="var(--color-vermillion)" opacity="0.5"/>
-                <circle cx="16" cy="13" r="3" fill="var(--color-vermillion)" opacity="0.5"/>
-                <circle cx="13" cy="16" r="3" fill="var(--color-vermillion)" opacity="0.4"/>
-                <circle cx="13" cy="13" r="2" fill="var(--color-gold)"/>
-                <line x1="13" y1="19" x2="13" y2="24" stroke="var(--color-jade)" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
-              当月花信
-            </div>
-          </button>
-
-          {/* --- 每日一诗 --- */}
-          <button
-            onClick={() => setActiveModal("poem")}
-            className="game-icon group absolute"
-            style={{ bottom: "15%", right: "12%" }}
-            aria-label="每日一诗"
-          >
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-card/85 ink-border">
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <path d="M8 6 L8 20 Q8 22, 10 22 L18 22" stroke="var(--color-ink)" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M8 6 Q8 4, 10 4 L16 4 Q18 4, 18 6 L18 20 Q18 22, 16 22" stroke="var(--color-ink)" strokeWidth="1.5" fill="rgba(253,251,246,0.5)"/>
-                <line x1="11" y1="9" x2="15" y2="9" stroke="var(--color-ink)" strokeWidth="1" opacity="0.5"/>
-                <line x1="11" y1="12" x2="15" y2="12" stroke="var(--color-ink)" strokeWidth="1" opacity="0.5"/>
-                <line x1="11" y1="15" x2="14" y2="15" stroke="var(--color-ink)" strokeWidth="1" opacity="0.5"/>
-              </svg>
-            </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
-              每日一诗
-            </div>
-          </button>
-
-          {/* --- 当下时辰 --- */}
-          {today?.currentShichen && (
-            <button
-              onClick={() => setActiveModal("shichen")}
-              className="game-icon group absolute"
-              style={{ top: "25%", left: "40%" }}
-              aria-label="当下时辰"
-            >
-              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-card/85 ink-border">
-                <div className="text-center">
-                  <p className="title-serif text-base font-bold text-ink leading-none">
-                    {today.currentShichen.name}
-                  </p>
-                  <p className="text-[9px] text-muted leading-none mt-0.5">
-                    {today.currentShichen.time}
-                  </p>
-                </div>
-              </div>
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-card/90 px-2 py-0.5 text-xs text-ink ink-border opacity-0 transition-opacity group-hover:opacity-100">
-                {today.currentShichen.meridian}
-              </div>
-            </button>
-          )}
+      {/* ===== 底部操作提示 ===== */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-3 pb-4">
+        <div className="flex items-center gap-3 rounded-full px-4 py-2"
+          style={{
+            background: "rgba(28, 25, 23, 0.5)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(196, 166, 122, 0.1)",
+          }}
+        >
+          <span className="text-xs text-paper/50">点击地面行走</span>
+          <span className="text-paper/20">|</span>
+          <span className="text-xs text-paper/50">靠近古人交谈</span>
+          <span className="text-paper/20">|</span>
+          <span className="text-xs text-paper/50">探索石碑</span>
         </div>
+      </div>
 
-        {/* 底部提示 */}
-        <div className="mt-2 text-center">
-          <p className="title-serif text-xs tracking-widest text-muted/70">
-            點擊庭院中的物件，探索今日之趣
-          </p>
+      {/* ===== 交互提示气泡 ===== */}
+      {hint && (
+        <div className="animate-bubble-in fixed left-1/2 top-20 z-40 -translate-x-1/2">
+          <div className="rounded-full px-4 py-2 text-xs text-paper"
+            style={{
+              background: "rgba(28, 25, 23, 0.85)",
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(196, 166, 122, 0.3)",
+            }}
+          >
+            {hint}
+          </div>
         </div>
-      </main>
+      )}
+
+      {/* ===== 右下角：换古人按钮 ===== */}
+      {ancient && !chatOpen && (
+        <button
+          onClick={handleReplaceAncient}
+          className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-paper transition-all hover:scale-105"
+          style={{
+            background: "rgba(28, 25, 23, 0.6)",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(196, 166, 122, 0.2)",
+          }}
+        >
+          <span className="title-serif">换一位古人</span>
+          <span className="text-paper/40">→</span>
+        </button>
+      )}
 
       {/* ===== 卷轴弹窗：万年历 ===== */}
       <ScrollModal
         open={activeModal === "calendar"}
         onClose={() => setActiveModal(null)}
-        title="萬年曆"
+        title="万年历"
         subtitle={today?.date}
         sealText="宜忌"
       >
@@ -340,7 +220,7 @@ export default function HomePage() {
         onClose={() => setActiveModal(null)}
         title={today?.jieqiInfo?.name ?? "节气"}
         subtitle={today?.jieqiInfo?.period}
-        sealText="節氣"
+        sealText="节气"
       >
         {today?.jieqiInfo && (
           <div className="space-y-4">
@@ -367,8 +247,8 @@ export default function HomePage() {
       <ScrollModal
         open={activeModal === "poem"}
         onClose={() => setActiveModal(null)}
-        title="每日一詩"
-        sealText="詩"
+        title="每日一诗"
+        sealText="诗"
       >
         {today?.dailyPoem && (
           <div className="space-y-3 text-center">
@@ -389,18 +269,18 @@ export default function HomePage() {
       <ScrollModal
         open={activeModal === "garden"}
         onClose={() => setActiveModal(null)}
-        title="時令蔬果"
-        subtitle="順時而食 · 應季而餐"
+        title="时令蔬果"
+        subtitle="顺时而食 · 应季而餐"
         sealText="食"
       >
         {today && (
           <div className="space-y-4">
             <div>
-              <p className="title-serif mb-2 text-sm font-semibold text-jade">時令蔬菜</p>
+              <p className="title-serif mb-2 text-sm font-semibold text-jade">时令蔬菜</p>
               <TagList items={today.seasonalVegetables} variant="yi" />
             </div>
             <div className="border-t border-scroll-edge/15 pt-4">
-              <p className="title-serif mb-2 text-sm font-semibold text-accent2">時令水果</p>
+              <p className="title-serif mb-2 text-sm font-semibold text-accent2">时令水果</p>
               <TagList items={today.seasonalFruits} />
             </div>
           </div>
@@ -411,8 +291,8 @@ export default function HomePage() {
       <ScrollModal
         open={activeModal === "flowers"}
         onClose={() => setActiveModal(null)}
-        title="當月花信"
-        subtitle="二十四番花信風"
+        title="当月花信"
+        subtitle="二十四番花信风"
         sealText="花"
       >
         {today && (
@@ -420,8 +300,8 @@ export default function HomePage() {
             <TagList items={today.flowers} />
             <div className="border-t border-scroll-edge/15 pt-3">
               <p className="text-xs leading-relaxed text-muted">
-                花信風，自小寒至穀雨，每候一花，以花為期。
-                梅花先行，楊花殿後，八氣二十四候，得二十四番花信。
+                花信风，自小寒至谷雨，每候一花，以花为期。
+                梅花先行，杨花殿后，八气二十四候，得二十四番花信。
               </p>
             </div>
           </div>
@@ -432,16 +312,16 @@ export default function HomePage() {
       <ScrollModal
         open={activeModal === "shichen"}
         onClose={() => setActiveModal(null)}
-        title={today?.currentShichen?.name ?? "時辰"}
+        title={today?.currentShichen?.name ?? "时辰"}
         subtitle={today?.currentShichen?.time}
-        sealText="時"
+        sealText="时"
       >
         {today?.currentShichen && (
           <div className="space-y-4">
             <p className="text-center text-sm text-accent2">{today.currentShichen.meridian}</p>
             <div className="rounded-lg bg-scroll-edge/5 p-3 text-center">
               <p className="text-sm text-ink">
-                古人此時：<span className="title-serif font-bold text-accent">{today.currentShichen.activity}</span>
+                古人此时：<span className="title-serif font-bold text-accent">{today.currentShichen.activity}</span>
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -474,17 +354,6 @@ export default function HomePage() {
         onSignIn={signIn}
         onSignUp={signUp}
       />
-
-      {/* ===== 右下角：换古人按钮 ===== */}
-      {ancient && !chatOpen && (
-        <button
-          onClick={handleReplaceAncient}
-          className="fixed bottom-5 right-5 z-20 flex items-center gap-2 rounded-full bg-card/90 px-4 py-2.5 text-sm text-ink ink-border ink-shadow transition-all hover:bg-card"
-        >
-          <span className="title-serif">換一位古人</span>
-          <span className="text-muted">→</span>
-        </button>
-      )}
     </div>
   );
 }
