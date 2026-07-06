@@ -153,19 +153,25 @@ export default function ChatModal({
     setInput("");
     setSending(true);
 
-    // 已登录：保存用户消息
-    if (accessToken) {
-      saveMessage(ancient.id, "user", text, "user");
+    // 未登录：不调用 AI，返回机械式提示引导登录
+    if (!accessToken) {
+      setSending(false);
+      setMessages((prev) => [...prev, {
+        role: "ancient",
+        content: `（${ancient.name}微微颔首，却未开口言语。）
+
+※ 登入后方可与古人交谈。`,
+      }]);
+      return;
     }
+
+    // 已登录：保存用户消息
+    saveMessage(ancient.id, "user", text, "user");
 
     try {
       const result = await callAiChat(ancient.id, text, messages, ancient);
       setMessages((prev) => [...prev, { role: "ancient", content: result.reply }]);
-
-      // 已登录：保存古人回复
-      if (accessToken) {
-        saveMessage(ancient.id, "ancient", result.reply, result.source);
-      }
+      saveMessage(ancient.id, "ancient", result.reply, result.source);
     } catch {
       setMessages((prev) => [...prev, { role: "ancient", content: "（叹息）此刻思绪难平，稍后再叙。" }]);
     } finally {
@@ -221,8 +227,8 @@ export default function ChatModal({
             >
               ✕
             </button>
-            <span className={`text-[10px] ${isLoggedIn ? "text-jade" : "text-muted/60"}`}>
-              {isLoggedIn ? "● 对话已记录" : "○ 游客模式"}
+            <span className={`text-[10px] ${isLoggedIn ? "text-jade" : "text-vermillion"}`}>
+              {isLoggedIn ? "● 对话已记录" : "🔒 游客模式"}
             </span>
           </div>
         </div>
@@ -268,8 +274,8 @@ export default function ChatModal({
 
         {/* 未登录提示 */}
         {historyLoaded && !isLoggedIn && (
-          <div className="border-t border-border/30 bg-vermillion/3 px-4 py-1.5 text-center text-[11px] text-muted">
-            登入后可保存对话记录，换设备也能继续
+          <div className="border-t border-border/30 bg-vermillion/5 px-4 py-2 text-center text-[11px] text-muted">
+            🔒 游客模式 — 登入后方可与古人交谈
           </div>
         )}
 
@@ -289,7 +295,7 @@ export default function ChatModal({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") handleSend(); }}
-              placeholder={`向${ancient.name}请教…`}
+              placeholder={isLoggedIn ? `向${ancient.name}请教…` : "登入后可与之交谈…"}
               className="flex-1 rounded-xl border border-border/50 bg-card px-4 py-2.5 text-sm text-ink outline-none focus:border-accent/50"
             />
             <button

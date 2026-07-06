@@ -104,6 +104,34 @@ Deno.serve(async (req: Request) => {
     return new Response('ok', { headers: CORS_HEADERS })
   }
 
+  // ===== 安全限制：必须携带有效 JWT（登录用户才能调用 AI）=====
+  const authHeader = req.headers.get('Authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return new Response(
+      JSON.stringify({ success: false, error: '请先登入后再与古人交谈' }),
+      { status: 401, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
+    )
+  }
+
+  // 验证 JWT（通过 Supabase）
+  const supabaseUrl = Deno.env.get('SUPABASE_URL') || 'https://pnbrlpsblvgkvbokvbkv.supabase.co'
+  const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || 'sb_publishable_liBkYUhKjK0tWqoq5R-ZoQ_f4eeX6bo'
+  const token = authHeader.replace('Bearer ', '')
+
+  const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: supabaseAnonKey,
+    },
+  })
+
+  if (!userRes.ok) {
+    return new Response(
+      JSON.stringify({ success: false, error: '登入已过期，请重新登入' }),
+      { status: 401, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
+    )
+  }
+
   try {
     const body = await req.json()
     const { ancientId, message, messages, ancient: ancientInline } = body as {
