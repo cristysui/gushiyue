@@ -268,14 +268,24 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   top: `${asset.y}px`,
                   width: `${asset.w}px`,
                   zIndex: asset.z,
-                  pointerEvents: "none",
+                  pointerEvents: hasInteraction ? "auto" : "none",
+                  cursor: hasInteraction ? "pointer" : "default",
                 }}
+                onMouseEnter={hasInteraction ? () => {
+                  setHoveredAsset(asset.id);
+                  setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
+                } : undefined}
+                onMouseLeave={hasInteraction ? () => {
+                  setHoveredAsset(null);
+                  setTooltip(null);
+                } : undefined}
+                onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
               >
                 <img
                   src={asset.src}
                   alt={ancient?.name ?? "古人"}
                   draggable={false}
-                  style={{ width: "100%", height: "auto", objectFit: "contain" }}
+                  style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
                 {ancient && (
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
@@ -287,20 +297,11 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                     </span>
                   </div>
                 )}
-                {/* 交互标记：直接渲染在素材上方，确保位置一致 */}
+                {/* 交互标记：纯视觉指示，点击由容器处理 */}
                 {hasInteraction && (
                   <div
-                    className="absolute left-1/2 top-3 -translate-x-1/2 cursor-pointer"
-                    style={{ pointerEvents: "auto", animation: "float-gentle 2s ease-in-out infinite" }}
-                    onMouseEnter={() => {
-                      setHoveredAsset(asset.id);
-                      setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredAsset(null);
-                      setTooltip(null);
-                    }}
-                    onClick={() => handleInteract(asset.interaction!)}
+                    className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
+                    style={{ animation: "float-gentle 2s ease-in-out infinite" }}
                   >
                     <div
                       className="flex items-center justify-center rounded-full text-[10px] font-bold text-white"
@@ -333,14 +334,24 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   width: `${asset.w}px`,
                   zIndex: asset.z,
                   opacity: asset.opacity ?? 1,
-                  pointerEvents: "none",
+                  pointerEvents: hasInteraction ? "auto" : "none",
+                  cursor: hasInteraction ? "pointer" : "default",
                 }}
+                onMouseEnter={hasInteraction ? () => {
+                  setHoveredAsset(asset.id);
+                  setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
+                } : undefined}
+                onMouseLeave={hasInteraction ? () => {
+                  setHoveredAsset(null);
+                  setTooltip(null);
+                } : undefined}
+                onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
               >
                 <img
                   src={asset.src}
                   alt={asset.name}
                   draggable={false}
-                  style={{ width: "100%", height: "auto", objectFit: "contain" }}
+                  style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
                 {ancient && (
                   <span
@@ -350,11 +361,32 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                     {ancient.name}
                   </span>
                 )}
+                {/* 交互标记：纯视觉指示 */}
+                {hasInteraction && (
+                  <div
+                    className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
+                    style={{ animation: "float-gentle 2s ease-in-out infinite" }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-full text-[10px] font-bold text-white"
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        background: INTERACTION_COLORS[asset.interaction!],
+                        border: "2px solid rgba(253, 251, 246, 0.8)",
+                        boxShadow: `0 0 10px ${INTERACTION_COLORS[asset.interaction!]}66`,
+                        opacity: hoveredAsset === asset.id ? 1 : 0.7,
+                      }}
+                    >
+                      {INTERACTION_ICONS[asset.interaction!]}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           }
 
-          // 普通素材 + 交互标记（如有 interaction 则包裹可点击区域）
+          // 普通素材 + 交互标记（如有 interaction 则整个素材区域可点击）
           return (
             <div
               key={asset.id}
@@ -366,7 +398,17 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 zIndex: asset.z,
                 opacity: asset.opacity ?? 1,
                 pointerEvents: hasInteraction ? "auto" : "none",
+                cursor: hasInteraction ? "pointer" : "default",
               }}
+              onMouseEnter={hasInteraction ? () => {
+                setHoveredAsset(asset.id);
+                setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
+              } : undefined}
+              onMouseLeave={hasInteraction ? () => {
+                setHoveredAsset(null);
+                setTooltip(null);
+              } : undefined}
+              onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
             >
               <img
                 src={asset.src}
@@ -379,20 +421,11 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   pointerEvents: "none",
                 }}
               />
-              {/* 交互标记：直接渲染在素材上方，位置永远跟随素材 */}
+              {/* 交互标记：纯视觉指示，点击由容器处理 */}
               {hasInteraction && (
                 <div
-                  className="absolute left-1/2 top-3 -translate-x-1/2 cursor-pointer"
+                  className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
                   style={{ animation: "float-gentle 2s ease-in-out infinite" }}
-                  onMouseEnter={() => {
-                    setHoveredAsset(asset.id);
-                    setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredAsset(null);
-                    setTooltip(null);
-                  }}
-                  onClick={() => handleInteract(asset.interaction!)}
                 >
                   <div
                     className="flex items-center justify-center rounded-full text-[10px] font-bold text-white"

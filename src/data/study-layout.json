@@ -45,7 +45,8 @@
       "w": 311,
       "z": 9,
       "category": "ui",
-      "locked": true
+      "locked": true,
+      "interaction": "ancient"
     },
     {
       "id": "elem-solar-term-branch",
@@ -249,7 +250,8 @@
         "y": 1028,
         "w": 277,
         "z": 12,
-        "category": "ui"
+        "category": "ui",
+        "interaction": "ancient"
       },
       {
         "id": "elem-tabletop-empty",
