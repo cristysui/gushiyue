@@ -306,16 +306,6 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   alt={ancient?.name ?? "古人"}
                   style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
-                {ancient && (
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                    <span
-                      className="title-serif flex items-center justify-center text-ink"
-                      style={{ fontSize: `${asset.w * 0.04}px`, letterSpacing: "0.1em" }}
-                    >
-                      {ancient.name}
-                    </span>
-                  </div>
-                )}
                 {/* 交互标记：纯视觉指示，点击由容器处理 */}
                 {hasInteraction && (
                   <div
@@ -466,7 +456,7 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 <div
                   className="text-almanac absolute flex flex-col items-center justify-center text-center"
                   style={{
-                    top: "calc(10% + 36px)",
+                    top: "calc(10% + 18px)",
                     left: "14%",
                     right: "14%",
                     bottom: "35%",
