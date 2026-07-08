@@ -4,7 +4,7 @@
   "assets": [
     {
       "id": "layer-window-bg",
-      "src": "/assets/four-seasons-study-components/window-landscape-background.png",
+      "src": "/assets/four-seasons-study-components/window-landscape-background.webp",
       "name": "窗外风景",
       "x": 0,
       "y": 0,
@@ -16,7 +16,7 @@
     },
     {
       "id": "layer-room-bg",
-      "src": "/assets/four-seasons-study-components/landscape-fixed-background-room.png",
+      "src": "/assets/four-seasons-study-components/landscape-fixed-background-room.webp",
       "name": "固定背景房间",
       "x": 0,
       "y": 0,
@@ -27,7 +27,7 @@
     },
     {
       "id": "layer-foreground-desk",
-      "src": "/assets/four-seasons-study-components/landscape-fixed-foreground-desk.png",
+      "src": "/assets/four-seasons-study-components/landscape-fixed-foreground-desk.webp",
       "name": "前景书案",
       "x": 0,
       "y": 0,
@@ -38,7 +38,7 @@
     },
     {
       "id": "elem-visitor-plaque",
-      "src": "/assets/four-seasons-study-components/visitor-name-plaque-blank.png",
+      "src": "/assets/four-seasons-study-components/visitor-name-plaque-blank.webp",
       "name": "访客名牌",
       "x": 597,
       "y": 625,
@@ -50,7 +50,7 @@
     },
     {
       "id": "elem-solar-term-branch",
-      "src": "/assets/four-seasons-study-components/solar-term-flower-branch.png",
+      "src": "/assets/four-seasons-study-components/solar-term-flower-branch.webp",
       "name": "节气花枝",
       "x": 1418,
       "y": 82,
@@ -61,7 +61,7 @@
     },
     {
       "id": "elem-almanac-plaque",
-      "src": "/assets/four-seasons-study-components/almanac-plaque-blank.png",
+      "src": "/assets/four-seasons-study-components/almanac-plaque-blank.webp",
       "name": "万年历牌",
       "x": 262,
       "y": 35,
@@ -72,7 +72,7 @@
     },
     {
       "id": "elem-wuxing-chest",
-      "src": "/assets/four-seasons-study-components/wuxing-clothing-chest.png",
+      "src": "/assets/four-seasons-study-components/wuxing-clothing-chest.webp",
       "name": "五行衣箱",
       "x": 178,
       "y": 750,
@@ -83,7 +83,7 @@
     },
     {
       "id": "elem-produce-basket",
-      "src": "/assets/four-seasons-study-components/seasonal-produce-basket.png",
+      "src": "/assets/four-seasons-study-components/seasonal-produce-basket.webp",
       "name": "时令蔬果篮",
       "x": 980,
       "y": 821,
@@ -94,7 +94,7 @@
     },
     {
       "id": "elem-archive-cabinet",
-      "src": "/assets/four-seasons-study-components/letter-archive-cabinet.png",
+      "src": "/assets/four-seasons-study-components/letter-archive-cabinet.webp",
       "name": "书信柜",
       "x": 1394,
       "y": 546,
@@ -105,7 +105,7 @@
     },
     {
       "id": "elem-ancient-guest",
-      "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.png",
+      "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.webp",
       "name": "古人访客",
       "x": 465,
       "y": 32,
@@ -117,7 +117,7 @@
     },
     {
       "id": "elem-tabletop-empty",
-      "src": "/assets/four-seasons-study-components/landscape-placement-tabletop-empty.png",
+      "src": "/assets/four-seasons-study-components/landscape-placement-tabletop-empty.webp",
       "name": "桌面空位",
       "x": 30,
       "y": 69,
@@ -198,7 +198,7 @@
     "assets": [
       {
         "id": "layer-window-bg",
-        "src": "/assets/four-seasons-study-components/window-landscape-background.png",
+        "src": "/assets/four-seasons-study-components/window-landscape-background.webp",
         "name": "窗外风景",
         "x": 0,
         "y": 0,
@@ -210,7 +210,7 @@
       },
       {
         "id": "layer-room-bg",
-        "src": "/assets/four-seasons-study-components/portrait-fixed-background-room.png",
+        "src": "/assets/four-seasons-study-components/portrait-fixed-background-room.webp",
         "name": "固定背景房间",
         "x": 0,
         "y": 0,
@@ -221,7 +221,7 @@
       },
       {
         "id": "layer-foreground-desk",
-        "src": "/assets/four-seasons-study-components/portrait-fixed-foreground-desk.png",
+        "src": "/assets/four-seasons-study-components/portrait-fixed-foreground-desk.webp",
         "name": "前景书案",
         "x": 0,
         "y": 0,
@@ -232,7 +232,7 @@
       },
       {
         "id": "elem-ancient-guest",
-        "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.png",
+        "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.webp",
         "name": "古人访客",
         "x": 111,
         "y": 366,
@@ -244,7 +244,7 @@
       },
       {
         "id": "elem-visitor-plaque",
-        "src": "/assets/four-seasons-study-components/visitor-name-plaque-blank.png",
+        "src": "/assets/four-seasons-study-components/visitor-name-plaque-blank.webp",
         "name": "访客名牌",
         "x": 347,
         "y": 1028,
@@ -255,7 +255,7 @@
       },
       {
         "id": "elem-tabletop-empty",
-        "src": "/assets/four-seasons-study-components/portrait-placement-tabletop-empty.png",
+        "src": "/assets/four-seasons-study-components/portrait-placement-tabletop-empty.webp",
         "name": "桌面空位",
         "x": -37,
         "y": -122,
@@ -266,7 +266,7 @@
       },
       {
         "id": "elem-almanac-plaque",
-        "src": "/assets/four-seasons-study-components/almanac-plaque-blank.png",
+        "src": "/assets/four-seasons-study-components/almanac-plaque-blank.webp",
         "name": "万年历牌",
         "x": 0,
         "y": 6,
@@ -277,7 +277,7 @@
       },
       {
         "id": "elem-solar-term-branch",
-        "src": "/assets/four-seasons-study-components/solar-term-flower-branch.png",
+        "src": "/assets/four-seasons-study-components/solar-term-flower-branch.webp",
         "name": "节气花枝",
         "x": 816,
         "y": 644,
@@ -288,7 +288,7 @@
       },
       {
         "id": "elem-wuxing-chest",
-        "src": "/assets/four-seasons-study-components/wuxing-clothing-chest.png",
+        "src": "/assets/four-seasons-study-components/wuxing-clothing-chest.webp",
         "name": "五行衣箱",
         "x": -4,
         "y": 1193,
@@ -299,7 +299,7 @@
       },
       {
         "id": "elem-produce-basket",
-        "src": "/assets/four-seasons-study-components/seasonal-produce-basket.png",
+        "src": "/assets/four-seasons-study-components/seasonal-produce-basket.webp",
         "name": "时令蔬果篮",
         "x": 485,
         "y": 1260,
@@ -310,7 +310,7 @@
       },
       {
         "id": "elem-archive-cabinet",
-        "src": "/assets/four-seasons-study-components/letter-archive-cabinet.png",
+        "src": "/assets/four-seasons-study-components/letter-archive-cabinet.webp",
         "name": "书信柜",
         "x": 832,
         "y": 1023,

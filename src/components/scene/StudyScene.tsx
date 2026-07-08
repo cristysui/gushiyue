@@ -108,6 +108,23 @@ function WeatherParticles({ type }: { type: WeatherType }) {
   );
 }
 
+// ===== 带淡入动画的场景图片 =====
+function SceneImage({ src, alt, eager = false, style }: { src: string; alt: string; eager?: boolean; style?: React.CSSProperties }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <img
+      src={src}
+      alt={alt}
+      draggable={false}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      onLoad={() => setLoaded(true)}
+      className={`scene-img ${loaded ? "loaded" : ""}`}
+      style={style}
+    />
+  );
+}
+
 // ===== 交互标记颜色映射 =====
 const INTERACTION_COLORS: Record<string, string> = {
   ancient: "#c44536",
@@ -234,14 +251,14 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
         {sortedAssets.map((asset) => {
           const hasInteraction = asset.interaction && asset.interaction !== "null" && INTERACTION_COLORS[asset.interaction];
 
-          // 背景类素材铺满画布
+          // 背景类素材铺满画布（首屏 eager 加载）
           if (asset.category === "fixed") {
             return (
-              <img
+              <SceneImage
                 key={asset.id}
                 src={asset.src}
                 alt={asset.name}
-                draggable={false}
+                eager
                 style={{
                   position: "absolute",
                   left: 0,
@@ -281,10 +298,9 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 } : undefined}
                 onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
               >
-                <img
+                <SceneImage
                   src={asset.src}
                   alt={ancient?.name ?? "古人"}
-                  draggable={false}
                   style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
                 {ancient && (
@@ -347,10 +363,9 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 } : undefined}
                 onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
               >
-                <img
+                <SceneImage
                   src={asset.src}
                   alt={asset.name}
-                  draggable={false}
                   style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
                 {ancient && (
@@ -410,10 +425,9 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
               } : undefined}
               onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
             >
-              <img
+              <SceneImage
                 src={asset.src}
                 alt={asset.name}
-                draggable={false}
                 style={{
                   width: "100%",
                   height: "auto",
