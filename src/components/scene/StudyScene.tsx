@@ -166,7 +166,7 @@ interface StudySceneProps {
   /** Debug 模式下隐藏素材（由 DebugOverlay 独占渲染），退出时重新加载 */
   debugMode?: boolean;
   /** 今日数据，用于万年历牌文字 */
-  today?: { lunarDate: string; date: string; jieqi: string; wuxing: string } | null;
+  today?: { lunarDate: string; date: string; weekday: string; jieqi: string; isJieqiDay: boolean; wuxing: string } | null;
 }
 
 export default function StudyScene({ ancient, onInteract, containerRef, debugMode = false, today = null }: StudySceneProps) {
@@ -462,22 +462,26 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   alt={asset.name}
                   style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
-                {/* 日期文字叠加：限制在牌面上半区域，防止溢出 */}
+                {/* 日期文字叠加：限制在牌面可用区域（牌面有木质边框留白） */}
                 <div
                   className="text-almanac absolute flex flex-col items-center justify-center text-center"
                   style={{
-                    top: "8%",
-                    left: "12%",
-                    right: "12%",
-                    bottom: "45%",
+                    top: "10%",
+                    left: "18%",
+                    right: "18%",
+                    bottom: "40%",
                     overflow: "hidden",
                   }}
                 >
-                  <p style={{ fontSize: `${asset.w * 0.07}px`, fontWeight: 600, lineHeight: 1.2 }}>{today.lunarDate}</p>
-                  <p style={{ fontSize: `${asset.w * 0.045}px`, opacity: 0.8, marginTop: "2px" }}>{today.date}</p>
-                  <p style={{ fontSize: `${asset.w * 0.055}px`, color: "#c44536", marginTop: "3px" }}>{today.jieqi}</p>
+                  <p style={{ fontSize: `${asset.w * 0.055}px`, fontWeight: 600, lineHeight: 1.2 }}>{today.lunarDate}</p>
+                  <p style={{ fontSize: `${asset.w * 0.04}px`, opacity: 0.8, marginTop: "2px" }}>{today.date}</p>
+                  <p style={{ fontSize: `${asset.w * 0.038}px`, opacity: 0.7, marginTop: "1px" }}>{today.weekday}</p>
+                  {/* 节气仅在当天显示 */}
+                  {today.isJieqiDay && (
+                    <p style={{ fontSize: `${asset.w * 0.05}px`, color: "#c44536", marginTop: "3px" }}>{today.jieqi}</p>
+                  )}
                   {today.wuxing && (
-                    <p style={{ fontSize: `${asset.w * 0.04}px`, opacity: 0.7, marginTop: "2px" }}>{today.wuxing}日</p>
+                    <p style={{ fontSize: `${asset.w * 0.035}px`, opacity: 0.7, marginTop: "2px" }}>{today.wuxing}日</p>
                   )}
                 </div>
                 {/* 交互标记 */}

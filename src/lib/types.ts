@@ -27,13 +27,17 @@ export interface Shichen {
 // 今日综合数据（/api/today 返回类型）
 export interface TodayData {
   date: string; // 公历日期
+  weekday: string; // 星期几，如「星期三」
   lunarDate: string; // 农历日期 / 干支纪日
   jieqi: string; // 当前节气名称
+  isJieqiDay: boolean; // 今天是否是节气当天
+  jieqiDateRange: string; // 节气起止日期，如「7月7日 - 7月23日」
   jieqiInfo: JieqiPlan | null; // 当前节气详细方案
   wuxing: string; // 今日五行（金/木/水/火/土）
   todayYi: string[]; // 今日宜
   todayJi: string[]; // 今日忌
-  recommendedColors: { name: string; hex: string }[]; // 五行推荐颜色
+  recommendedColors: { name: string; hex: string }[]; // 五行本命色
+  beneficialColors: { name: string; hex: string }[]; // 五行利于色（所生之色的推荐）
   seasonalVegetables: string[]; // 当月时令蔬菜
   seasonalFruits: string[]; // 当月时令水果
   flowers: string[]; // 当月花卉

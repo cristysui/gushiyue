@@ -144,13 +144,13 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
               {/* 核心日期区 */}
               <div className="mb-4 rounded-xl border border-gold/20 bg-gold/5 p-4">
                 <p className="title-serif text-xl font-bold text-gold">{today.lunarDate}</p>
-                <p className="mt-1 text-sm text-paper/60">{today.date}</p>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <p className="mt-1 text-sm text-paper/60">{today.date} {today.weekday}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <span className="rounded-full border border-gold/30 bg-gold/10 px-2.5 py-0.5 text-xs text-gold">
                     {today.jieqi}
                   </span>
-                  {today.jieqiInfo?.period && (
-                    <span className="text-xs text-paper/50">{today.jieqiInfo.period}</span>
+                  {today.jieqiDateRange && (
+                    <span className="text-xs text-paper/50">{today.jieqiDateRange}</span>
                   )}
                 </div>
               </div>
@@ -180,18 +180,36 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
                   </div>
                 )}
 
-                {/* 推荐颜色 */}
-                {today.recommendedColors?.length > 0 && (
+                {/* 推荐颜色：利于色（优先）+ 本命色 */}
+                {(today.beneficialColors?.length > 0 || today.recommendedColors?.length > 0) && (
                   <div className="rounded-lg border border-border/30 bg-white/5 p-3">
-                    <p className="mb-1 text-xs text-paper/40">推荐色</p>
-                    <div className="flex gap-1.5">
-                      {today.recommendedColors.map((c, i) => (
-                        <span key={i} className="flex items-center gap-1 text-xs text-paper/70">
-                          <span className="h-3 w-3 rounded-full" style={{ background: c.hex }} />
-                          {c.name}
-                        </span>
-                      ))}
-                    </div>
+                    <p className="mb-1 text-xs text-paper/40">穿衣推荐色</p>
+                    {today.beneficialColors?.length > 0 && (
+                      <div className="mb-1.5">
+                        <span className="mr-1.5 text-[10px] text-jade/60">利于色</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {today.beneficialColors.map((c, i) => (
+                            <span key={`b${i}`} className="flex items-center gap-1 text-xs text-paper/70">
+                              <span className="h-3 w-3 rounded-full" style={{ background: c.hex }} />
+                              {c.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {today.recommendedColors?.length > 0 && (
+                      <div>
+                        <span className="mr-1.5 text-[10px] text-paper/40">本命色</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {today.recommendedColors.map((c, i) => (
+                            <span key={`r${i}`} className="flex items-center gap-1 text-xs text-paper/60">
+                              <span className="h-3 w-3 rounded-full" style={{ background: c.hex }} />
+                              {c.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

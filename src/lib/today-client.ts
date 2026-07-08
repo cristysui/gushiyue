@@ -8,10 +8,12 @@ import { Solar } from 'lunar-javascript'
 import {
   getCurrentJieqi,
   getJieqiPlan,
+  getJieqiDateRange,
   getCurrentShichen,
   getSeasonalFood,
   getFlowers,
   getColorsByWuxing,
+  getBeneficialColorsByWuxing,
   getColorHex,
   getRandomPoem,
 } from './data'
@@ -54,8 +56,10 @@ export function computeTodayData(): TodayData {
 
   // 节气
   const jieqiFromLunar = lunar.getJieQi()
+  const isJieqiDay = !!jieqiFromLunar // lunar.getJieQi() 仅在节气当天返回非空
   const jieqi = jieqiFromLunar || getCurrentJieqi(now)
   const jieqiInfo = getJieqiPlan(jieqi)
+  const jieqiDateRange = getJieqiDateRange(jieqi)
 
   // 时辰
   const currentShichen = getCurrentShichen(now)
@@ -67,22 +71,34 @@ export function computeTodayData(): TodayData {
   // 每日一诗
   const dailyPoem = getRandomPoem()
 
-  // 五行推荐颜色
+  // 五行本命色（五行本身的颜色）
   const colorNames = getColorsByWuxing(wuxing)
   const recommendedColors = colorNames.map((name) => ({ name, hex: getColorHex(name) }))
+
+  // 五行利于色（所生之五行的颜色，更适合穿着）
+  const beneficialColorNames = getBeneficialColorsByWuxing(wuxing)
+  const beneficialColors = beneficialColorNames.map((name) => ({ name, hex: getColorHex(name) }))
+
+  // 星期几
+  const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+  const weekday = weekdays[now.getDay()]
 
   // 日期格式化
   const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`
 
   return {
     date: dateStr,
+    weekday,
     lunarDate,
     jieqi,
+    isJieqiDay,
+    jieqiDateRange,
     jieqiInfo,
     wuxing,
     todayYi: dayYi,
     todayJi: dayJi,
     recommendedColors,
+    beneficialColors,
     seasonalVegetables: seasonal.vegetables,
     seasonalFruits: seasonal.fruits,
     flowers,

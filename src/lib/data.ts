@@ -86,6 +86,52 @@ export function getCurrentJieqi(date = new Date()): string {
 }
 
 /**
+ * 获取当前节气的起止日期范围
+ * 起始日 = 当前节气的日期，结束日 = 下一个节气的日期
+ *
+ * @param jieqiName 当前节气名称
+ * @returns 如「7月7日 - 7月23日」
+ */
+export function getJieqiDateRange(jieqiName: string): string {
+  const idx = JIEQI_DATES.findIndex(([name]) => name === jieqiName)
+  if (idx === -1) return ''
+
+  const [, m1, d1] = JIEQI_DATES[idx]
+  const start = `${m1}月${d1}日`
+
+  // 下一个节气（跨年则取第一个）
+  const next = JIEQI_DATES[(idx + 1) % JIEQI_DATES.length]
+  const end = `${next[1]}月${next[2]}日`
+
+  return `${start} - ${end}`
+}
+
+/**
+ * 五行相生关系：X 生 Y
+ * 金生水、水生木、木生火、火生土、土生金
+ */
+const WUXING_GENERATES: Record<string, string> = {
+  '金': '水',
+  '水': '木',
+  '木': '火',
+  '火': '土',
+  '土': '金',
+}
+
+/**
+ * 获取五行利于色（所生之五行对应的颜色）
+ * 例如今日为水日，水生木，则利于色为木的颜色
+ *
+ * @param wuxing 今日五行
+ * @returns 颜色名称数组
+ */
+export function getBeneficialColorsByWuxing(wuxing: string): string[] {
+  const generated = WUXING_GENERATES[wuxing]
+  if (!generated) return []
+  return getColorsByWuxing(generated)
+}
+
+/**
  * 根据节气名获取对应的生活方案
  *
  * @param name 节气名称，如「立春」
