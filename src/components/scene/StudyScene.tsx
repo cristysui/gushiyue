@@ -166,7 +166,7 @@ interface StudySceneProps {
   /** Debug 模式下隐藏素材（由 DebugOverlay 独占渲染），退出时重新加载 */
   debugMode?: boolean;
   /** 今日数据，用于万年历牌文字 */
-  today?: { lunarDate: string; date: string; weekday: string; jieqi: string; isJieqiDay: boolean; wuxing: string } | null;
+  today?: { lunarDate: string; lunarDateShort: string; date: string; weekday: string; jieqi: string; isJieqiDay: boolean; wuxing: string } | null;
 }
 
 export default function StudyScene({ ancient, onInteract, containerRef, debugMode = false, today = null }: StudySceneProps) {
@@ -309,8 +309,8 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 {ancient && (
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
                     <span
-                      className="title-serif flex items-center justify-center text-[9px] text-ink"
-                      style={{ letterSpacing: "0.1em" }}
+                      className="title-serif flex items-center justify-center text-ink"
+                      style={{ fontSize: `${asset.w * 0.04}px`, letterSpacing: "0.1em" }}
                     >
                       {ancient.name}
                     </span>
@@ -373,8 +373,8 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 />
                 {ancient && (
                   <span
-                    className="title-serif absolute inset-0 flex items-center justify-center text-[14px] text-ink"
-                    style={{ letterSpacing: "0.1em" }}
+                    className="title-serif absolute inset-0 flex items-center justify-center text-ink"
+                    style={{ fontSize: `${asset.w * 0.16}px`, letterSpacing: "0.1em" }}
                   >
                     {ancient.name}
                   </span>
@@ -425,7 +425,7 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 />
                 <div
                   className="text-module-label absolute inset-0 flex items-center justify-center"
-                  style={{ fontSize: `${asset.w * 0.22}px`, lineHeight: 1.3 }}
+                  style={{ fontSize: `${asset.w * 0.28}px`, lineHeight: 1.3 }}
                 >
                   {asset.label}
                 </div>
@@ -462,26 +462,22 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   alt={asset.name}
                   style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
-                {/* 日期文字叠加：限制在牌面可用区域（牌面有木质边框留白） */}
+                {/* 日期文字叠加：从上到下 1.今日日期 2.星期几 3.农历 4.五行日 */}
                 <div
                   className="text-almanac absolute flex flex-col items-center justify-center text-center"
                   style={{
                     top: "10%",
-                    left: "18%",
-                    right: "18%",
-                    bottom: "40%",
+                    left: "14%",
+                    right: "14%",
+                    bottom: "35%",
                     overflow: "hidden",
                   }}
                 >
-                  <p style={{ fontSize: `${asset.w * 0.055}px`, fontWeight: 600, lineHeight: 1.2 }}>{today.lunarDate}</p>
-                  <p style={{ fontSize: `${asset.w * 0.04}px`, opacity: 0.8, marginTop: "2px" }}>{today.date}</p>
-                  <p style={{ fontSize: `${asset.w * 0.038}px`, opacity: 0.7, marginTop: "1px" }}>{today.weekday}</p>
-                  {/* 节气仅在当天显示 */}
-                  {today.isJieqiDay && (
-                    <p style={{ fontSize: `${asset.w * 0.05}px`, color: "#c44536", marginTop: "3px" }}>{today.jieqi}</p>
-                  )}
+                  <p style={{ fontSize: `${asset.w * 0.085}px`, fontWeight: 700, lineHeight: 1.1 }}>{today.date}</p>
+                  <p style={{ fontSize: `${asset.w * 0.065}px`, opacity: 0.8, marginTop: "3px" }}>{today.weekday}</p>
+                  <p style={{ fontSize: `${asset.w * 0.07}px`, opacity: 0.85, marginTop: "3px" }}>{today.lunarDateShort}</p>
                   {today.wuxing && (
-                    <p style={{ fontSize: `${asset.w * 0.035}px`, opacity: 0.7, marginTop: "2px" }}>{today.wuxing}日</p>
+                    <p style={{ fontSize: `${asset.w * 0.06}px`, opacity: 0.7, marginTop: "3px" }}>{today.wuxing}日</p>
                   )}
                 </div>
                 {/* 交互标记 */}

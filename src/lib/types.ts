@@ -28,7 +28,8 @@ export interface Shichen {
 export interface TodayData {
   date: string; // 公历日期
   weekday: string; // 星期几，如「星期三」
-  lunarDate: string; // 农历日期 / 干支纪日
+  lunarDate: string; // 农历日期 / 干支纪日（含年）
+  lunarDateShort: string; // 农历日期（不含年），如「五月廿四」
   jieqi: string; // 当前节气名称
   isJieqiDay: boolean; // 今天是否是节气当天
   jieqiDateRange: string; // 节气起止日期，如「7月7日 - 7月23日」

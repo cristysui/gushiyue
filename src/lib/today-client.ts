@@ -41,6 +41,8 @@ export function computeTodayData(): TodayData {
 
   // 农历日期字符串
   const lunarDate = `${lunar.getYearInGanZhi()}${lunar.getYearShengXiao()}年 ${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
+  // 农历日期（不含年），如「五月廿四」
+  const lunarDateShort = `${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
 
   // 五行：取日干的天干对应五行
   const dayGan = lunar.getDayGan()
@@ -90,6 +92,7 @@ export function computeTodayData(): TodayData {
     date: dateStr,
     weekday,
     lunarDate,
+    lunarDateShort,
     jieqi,
     isJieqiDay,
     jieqiDateRange,
