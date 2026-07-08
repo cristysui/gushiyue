@@ -33,23 +33,25 @@ export default function HomePage() {
   const sceneContainerRef = useRef<HTMLDivElement>(null);
 
   const { user, accessToken, signIn, signUp, signOut } = useAuth();
+  const isDev = process.env.NODE_ENV === "development";
 
   useEffect(() => {
     setToday(computeTodayData());
     setAncient(getRandomAncientClient());
     setLoading(false);
 
-    // 检查 URL 是否有 debug 参数
-    if (typeof window !== "undefined") {
+    // 检查 URL 是否有 debug 参数（仅开发环境）
+    if (isDev && typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       if (params.get("debug") === "true") {
         setDebugMode(true);
       }
     }
-  }, []);
+  }, [isDev]);
 
-  // 快捷键 Ctrl+Shift+D
+  // 快捷键 Ctrl+Shift+D（仅开发环境）
   useEffect(() => {
+    if (!isDev) return;
     const handleKey = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === "D") {
         e.preventDefault();
@@ -178,8 +180,8 @@ export default function HomePage() {
         </button>
       )}
 
-      {/* ===== 左下角：Debug 按钮（非 Debug 时显示）===== */}
-      {!debugMode && (
+      {/* ===== 左下角：Debug 按钮（仅开发环境显示）===== */}
+      {!debugMode && isDev && (
         <button
           onClick={() => {
             setDebugMode(true);
