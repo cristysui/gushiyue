@@ -115,7 +115,7 @@ export default function HomePage() {
     <div className="fixed inset-0 overflow-hidden">
       {/* ===== 场景 ===== */}
       <div ref={sceneContainerRef} className="absolute inset-0">
-        <StudyScene ancient={ancient} onInteract={handleSceneInteract} containerRef={sceneContainerRef} debugMode={debugMode} />
+        <StudyScene ancient={ancient} onInteract={handleSceneInteract} containerRef={sceneContainerRef} debugMode={debugMode} today={today} />
       </div>
 
       {/* ===== Debug 拖拽层 ===== */}

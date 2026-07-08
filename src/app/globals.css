@@ -268,3 +268,32 @@ body {
     opacity: 1;
   }
 }
+
+/* ===== 书斋场景文字样式 ===== */
+.font-title {
+  font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", cursive;
+}
+
+.font-serif-cn {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+}
+
+.text-module-label {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-weight: 600;
+  color: #6b3f2f;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.15em;
+}
+
+.text-almanac {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  color: #5b3a2c;
+}
+
+.text-nav {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-weight: 400;
+  color: #6a5140;
+}

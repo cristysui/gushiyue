@@ -45,18 +45,23 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
     <>
       {/* 顶部 Header 条 */}
       <div
-        className="fixed left-0 right-0 top-0 z-30 cursor-pointer transition-all"
+        className="fixed left-0 right-0 top-0 z-30 transition-all"
         style={{
           background: "rgba(28, 25, 23, 0.55)",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
           borderBottom: "1px solid rgba(196, 166, 122, 0.15)",
         }}
-        onClick={handleClick}
       >
-        <div className={`flex items-center gap-2 px-4 ${isMobile ? "py-2" : "py-2.5"}`}>
-          {/* 左侧：核心历法信息 */}
-          <div className="flex items-baseline gap-2">
+        <div className={`flex items-center gap-3 px-4 ${isMobile ? "py-2" : "py-2.5"}`}>
+          {/* 左侧：标题 + 核心历法信息 */}
+          <span className="font-title text-lg text-paper sm:text-xl" style={{ letterSpacing: "0.05em" }}>
+            四时书斋
+          </span>
+
+          <span className="text-paper/20">|</span>
+
+          <div className="flex items-baseline gap-2 cursor-pointer" onClick={handleClick}>
             <span className="title-serif text-sm font-bold text-paper sm:text-base">
               {today.lunarDate}
             </span>
@@ -69,7 +74,7 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
           <span className="text-paper/30">·</span>
 
           {/* 节气 */}
-          <span className="rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-xs text-gold">
+          <span className="cursor-pointer rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-xs text-gold" onClick={handleClick}>
             {today.jieqi}
           </span>
 
@@ -85,17 +90,19 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
             {today.currentShichen?.name}
           </span>
 
-          {/* 宜（仅 Web 端，截断） */}
-          {!isMobile && today.todayYi?.length > 0 && (
-            <span className="hidden text-xs text-paper/50 lg:inline">
-              宜 {today.todayYi.slice(0, 3).join(" ")}
-            </span>
-          )}
-
           <div className="flex-1" />
 
+          {/* 顶部导航 */}
+          <nav className={`flex items-center gap-4 ${isMobile ? "hidden" : "flex"}`}>
+            {["书阁", "雅集", "笔记", "设置"].map((item) => (
+              <span key={item} className="text-nav text-sm cursor-pointer transition-opacity hover:opacity-100 opacity-80">
+                {item}
+              </span>
+            ))}
+          </nav>
+
           {/* 展开按钮 */}
-          <span className="text-xs text-paper/40 transition-transform" style={{ transform: expanded ? "rotate(180deg)" : "" }}>
+          <span className="cursor-pointer text-xs text-paper/40 transition-transform" style={{ transform: expanded ? "rotate(180deg)" : "" }} onClick={handleClick}>
             ▾
           </span>
         </div>

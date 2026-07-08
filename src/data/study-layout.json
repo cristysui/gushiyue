@@ -104,6 +104,50 @@
       "interaction": null
     },
     {
+      "id": "label-wuxing",
+      "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+      "name": "五行穿衣牌",
+      "x": 100,
+      "y": 770,
+      "w": 70,
+      "z": 13,
+      "category": "label",
+      "label": "五行穿衣"
+    },
+    {
+      "id": "label-produce",
+      "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+      "name": "应季蔬果牌",
+      "x": 905,
+      "y": 830,
+      "w": 70,
+      "z": 13,
+      "category": "label",
+      "label": "应季蔬果"
+    },
+    {
+      "id": "label-archive",
+      "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+      "name": "信匣牌",
+      "x": 1740,
+      "y": 560,
+      "w": 70,
+      "z": 13,
+      "category": "label",
+      "label": "信匣"
+    },
+    {
+      "id": "label-jieqi",
+      "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+      "name": "节气牌",
+      "x": 1830,
+      "y": 90,
+      "w": 70,
+      "z": 13,
+      "category": "label",
+      "label": "节气"
+    },
+    {
       "id": "elem-ancient-guest",
       "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.webp",
       "name": "古人访客",
@@ -318,6 +362,50 @@
         "z": 9,
         "category": "decoration",
         "interaction": "shichen"
+      },
+      {
+        "id": "label-wuxing",
+        "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+        "name": "五行穿衣牌",
+        "x": 440,
+        "y": 1200,
+        "w": 55,
+        "z": 13,
+        "category": "label",
+        "label": "五行穿衣"
+      },
+      {
+        "id": "label-produce",
+        "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+        "name": "应季蔬果牌",
+        "x": 910,
+        "y": 1270,
+        "w": 55,
+        "z": 13,
+        "category": "label",
+        "label": "应季蔬果"
+      },
+      {
+        "id": "label-archive",
+        "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+        "name": "信匣牌",
+        "x": 1010,
+        "y": 1030,
+        "w": 55,
+        "z": 13,
+        "category": "label",
+        "label": "信匣"
+      },
+      {
+        "id": "label-jieqi",
+        "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+        "name": "节气牌",
+        "x": 1000,
+        "y": 650,
+        "w": 55,
+        "z": 13,
+        "category": "label",
+        "label": "节气"
       }
     ],
     "hotspots": [

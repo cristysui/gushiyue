@@ -20,6 +20,7 @@ interface LayoutAsset {
   category?: string;
   interaction?: string;
   locked?: boolean;
+  label?: string;
 }
 
 interface OrientationLayout {
@@ -164,9 +165,11 @@ interface StudySceneProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   /** Debug 模式下隐藏素材（由 DebugOverlay 独占渲染），退出时重新加载 */
   debugMode?: boolean;
+  /** 今日数据，用于万年历牌文字 */
+  today?: { lunarDate: string; date: string; jieqi: string; wuxing: string } | null;
 }
 
-export default function StudyScene({ ancient, onInteract, containerRef, debugMode = false }: StudySceneProps) {
+export default function StudyScene({ ancient, onInteract, containerRef, debugMode = false, today = null }: StudySceneProps) {
   const weather = getSeasonWeather();
   const [hoveredAsset, setHoveredAsset] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
@@ -377,6 +380,98 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   </span>
                 )}
                 {/* 交互标记：纯视觉指示 */}
+                {hasInteraction && (
+                  <div
+                    className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
+                    style={{ animation: "float-gentle 2s ease-in-out infinite" }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-full text-[10px] font-bold text-white"
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        background: INTERACTION_COLORS[asset.interaction!],
+                        border: "2px solid rgba(253, 251, 246, 0.8)",
+                        boxShadow: `0 0 10px ${INTERACTION_COLORS[asset.interaction!]}66`,
+                        opacity: hoveredAsset === asset.id ? 1 : 0.7,
+                      }}
+                    >
+                      {INTERACTION_ICONS[asset.interaction!]}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // 模块竖牌：渲染空白牌 + 叠加竖排文字
+          if (asset.category === "label" && asset.label) {
+            return (
+              <div
+                key={asset.id}
+                style={{
+                  position: "absolute",
+                  left: `${asset.x}px`,
+                  top: `${asset.y}px`,
+                  width: `${asset.w}px`,
+                  zIndex: asset.z,
+                  pointerEvents: "none",
+                }}
+              >
+                <SceneImage
+                  src={asset.src}
+                  alt={asset.name}
+                  style={{ width: "100%", height: "auto", objectFit: "contain" }}
+                />
+                <div
+                  className="text-module-label absolute inset-0 flex items-center justify-center"
+                  style={{ fontSize: `${asset.w * 0.22}px`, lineHeight: 1.3 }}
+                >
+                  {asset.label}
+                </div>
+              </div>
+            );
+          }
+
+          // 万年历牌：渲染空白牌 + 叠加日期文字
+          if (asset.id === "elem-almanac-plaque" && today) {
+            return (
+              <div
+                key={asset.id}
+                style={{
+                  position: "absolute",
+                  left: `${asset.x}px`,
+                  top: `${asset.y}px`,
+                  width: `${asset.w}px`,
+                  zIndex: asset.z,
+                  pointerEvents: hasInteraction ? "auto" : "none",
+                  cursor: hasInteraction ? "pointer" : "default",
+                }}
+                onMouseEnter={hasInteraction ? () => {
+                  setHoveredAsset(asset.id);
+                  setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
+                } : undefined}
+                onMouseLeave={hasInteraction ? () => {
+                  setHoveredAsset(null);
+                  setTooltip(null);
+                } : undefined}
+                onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
+              >
+                <SceneImage
+                  src={asset.src}
+                  alt={asset.name}
+                  style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
+                />
+                {/* 日期文字叠加 */}
+                <div className="text-almanac absolute inset-0 flex flex-col items-center justify-center px-[8%] pt-[5%]">
+                  <p style={{ fontSize: `${asset.w * 0.09}px`, fontWeight: 600 }}>{today.lunarDate}</p>
+                  <p style={{ fontSize: `${asset.w * 0.06}px`, opacity: 0.8, marginTop: "4px" }}>{today.date}</p>
+                  <p style={{ fontSize: `${asset.w * 0.07}px`, color: "#c44536", marginTop: "4px" }}>{today.jieqi}</p>
+                  {today.wuxing && (
+                    <p style={{ fontSize: `${asset.w * 0.055}px`, opacity: 0.7, marginTop: "3px" }}>{today.wuxing}日</p>
+                  )}
+                </div>
+                {/* 交互标记 */}
                 {hasInteraction && (
                   <div
                     className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
