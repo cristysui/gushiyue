@@ -1,0 +1,387 @@
+{
+  "refW": 1920,
+  "refH": 1080,
+  "assets": [
+    {
+      "id": "layer-window-bg",
+      "src": "/assets/four-seasons-study-components/window-landscape-background.png",
+      "name": "窗外风景",
+      "x": 0,
+      "y": 0,
+      "w": 1920,
+      "z": 1,
+      "category": "fixed",
+      "opacity": 0.85,
+      "locked": true
+    },
+    {
+      "id": "layer-room-bg",
+      "src": "/assets/four-seasons-study-components/landscape-fixed-background-room.png",
+      "name": "固定背景房间",
+      "x": 0,
+      "y": 0,
+      "w": 1920,
+      "z": 3,
+      "category": "fixed",
+      "locked": true
+    },
+    {
+      "id": "layer-foreground-desk",
+      "src": "/assets/four-seasons-study-components/landscape-fixed-foreground-desk.png",
+      "name": "前景书案",
+      "x": 0,
+      "y": 0,
+      "w": 1920,
+      "z": 5,
+      "category": "fixed",
+      "locked": true
+    },
+    {
+      "id": "elem-visitor-plaque",
+      "src": "/assets/four-seasons-study-components/visitor-name-plaque-blank.png",
+      "name": "访客名牌",
+      "x": 597,
+      "y": 625,
+      "w": 311,
+      "z": 9,
+      "category": "ui",
+      "locked": true
+    },
+    {
+      "id": "elem-solar-term-branch",
+      "src": "/assets/four-seasons-study-components/solar-term-flower-branch.png",
+      "name": "节气花枝",
+      "x": 1418,
+      "y": 82,
+      "w": 413,
+      "z": 11,
+      "category": "decoration",
+      "interaction": "flowers"
+    },
+    {
+      "id": "elem-almanac-plaque",
+      "src": "/assets/four-seasons-study-components/almanac-plaque-blank.png",
+      "name": "万年历牌",
+      "x": 262,
+      "y": 35,
+      "w": 389,
+      "z": 11,
+      "category": "decoration",
+      "interaction": "calendar"
+    },
+    {
+      "id": "elem-wuxing-chest",
+      "src": "/assets/four-seasons-study-components/wuxing-clothing-chest.png",
+      "name": "五行衣箱",
+      "x": 178,
+      "y": 750,
+      "w": 405,
+      "z": 11,
+      "category": "decoration",
+      "interaction": null
+    },
+    {
+      "id": "elem-produce-basket",
+      "src": "/assets/four-seasons-study-components/seasonal-produce-basket.png",
+      "name": "时令蔬果篮",
+      "x": 980,
+      "y": 821,
+      "w": 331,
+      "z": 10,
+      "category": "decoration",
+      "interaction": "garden"
+    },
+    {
+      "id": "elem-archive-cabinet",
+      "src": "/assets/four-seasons-study-components/letter-archive-cabinet.png",
+      "name": "书信柜",
+      "x": 1394,
+      "y": 546,
+      "w": 338,
+      "z": 12,
+      "category": "decoration",
+      "interaction": null
+    },
+    {
+      "id": "elem-ancient-guest",
+      "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.png",
+      "name": "古人访客",
+      "x": 465,
+      "y": 32,
+      "w": 908,
+      "z": 4,
+      "category": "character",
+      "interaction": "ancient",
+      "locked": true
+    },
+    {
+      "id": "elem-tabletop-empty",
+      "src": "/assets/four-seasons-study-components/landscape-placement-tabletop-empty.png",
+      "name": "桌面空位",
+      "x": 30,
+      "y": 69,
+      "w": 1809,
+      "z": 8,
+      "category": "decoration",
+      "locked": true
+    }
+  ],
+  "hotspots": [
+    {
+      "id": "hs-ancient",
+      "type": "ancient",
+      "x": 42,
+      "y": 38,
+      "w": 16,
+      "h": 30,
+      "label": "与客交谈"
+    },
+    {
+      "id": "hs-poetry",
+      "type": "poetry",
+      "x": 38,
+      "y": 78,
+      "w": 24,
+      "h": 12,
+      "label": "每日一诗"
+    },
+    {
+      "id": "hs-jieqi",
+      "type": "jieqi",
+      "x": 8,
+      "y": 50,
+      "w": 10,
+      "h": 20,
+      "label": "节气"
+    },
+    {
+      "id": "hs-calendar",
+      "type": "calendar",
+      "x": 72,
+      "y": 18,
+      "w": 10,
+      "h": 22,
+      "label": "万年历"
+    },
+    {
+      "id": "hs-flowers",
+      "type": "flowers",
+      "x": 58,
+      "y": 65,
+      "w": 10,
+      "h": 15,
+      "label": "花信"
+    },
+    {
+      "id": "hs-garden",
+      "type": "garden",
+      "x": 20,
+      "y": 72,
+      "w": 12,
+      "h": 14,
+      "label": "时令"
+    },
+    {
+      "id": "hs-shichen",
+      "type": "shichen",
+      "x": 85,
+      "y": 55,
+      "w": 10,
+      "h": 18,
+      "label": "时辰"
+    }
+  ],
+  "portrait": {
+    "refW": 1080,
+    "refH": 1920,
+    "assets": [
+      {
+        "id": "layer-window-bg",
+        "src": "/assets/four-seasons-study-components/window-landscape-background.png",
+        "name": "窗外风景",
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "z": 1,
+        "category": "fixed",
+        "opacity": 0.85,
+        "locked": true
+      },
+      {
+        "id": "layer-room-bg",
+        "src": "/assets/four-seasons-study-components/portrait-fixed-background-room.png",
+        "name": "固定背景房间",
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "z": 3,
+        "category": "fixed",
+        "locked": true
+      },
+      {
+        "id": "layer-foreground-desk",
+        "src": "/assets/four-seasons-study-components/portrait-fixed-foreground-desk.png",
+        "name": "前景书案",
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "z": 5,
+        "category": "fixed",
+        "locked": true
+      },
+      {
+        "id": "elem-ancient-guest",
+        "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.png",
+        "name": "古人访客",
+        "x": 111,
+        "y": 366,
+        "w": 1006,
+        "z": 4,
+        "category": "character",
+        "interaction": "ancient",
+        "locked": false
+      },
+      {
+        "id": "elem-visitor-plaque",
+        "src": "/assets/four-seasons-study-components/visitor-name-plaque-blank.png",
+        "name": "访客名牌",
+        "x": 347,
+        "y": 1028,
+        "w": 277,
+        "z": 12,
+        "category": "ui"
+      },
+      {
+        "id": "elem-tabletop-empty",
+        "src": "/assets/four-seasons-study-components/portrait-placement-tabletop-empty.png",
+        "name": "桌面空位",
+        "x": -37,
+        "y": -122,
+        "w": 1211,
+        "z": 8,
+        "category": "decoration",
+        "locked": true
+      },
+      {
+        "id": "elem-almanac-plaque",
+        "src": "/assets/four-seasons-study-components/almanac-plaque-blank.png",
+        "name": "万年历牌",
+        "x": 0,
+        "y": 6,
+        "w": 497,
+        "z": 11,
+        "category": "decoration",
+        "interaction": "calendar"
+      },
+      {
+        "id": "elem-solar-term-branch",
+        "src": "/assets/four-seasons-study-components/solar-term-flower-branch.png",
+        "name": "节气花枝",
+        "x": 816,
+        "y": 644,
+        "w": 297,
+        "z": 11,
+        "category": "decoration",
+        "interaction": "flowers"
+      },
+      {
+        "id": "elem-wuxing-chest",
+        "src": "/assets/four-seasons-study-components/wuxing-clothing-chest.png",
+        "name": "五行衣箱",
+        "x": -4,
+        "y": 1193,
+        "w": 428,
+        "z": 11,
+        "category": "decoration",
+        "interaction": null
+      },
+      {
+        "id": "elem-produce-basket",
+        "src": "/assets/four-seasons-study-components/seasonal-produce-basket.png",
+        "name": "时令蔬果篮",
+        "x": 485,
+        "y": 1260,
+        "w": 413,
+        "z": 10,
+        "category": "decoration",
+        "interaction": "garden"
+      },
+      {
+        "id": "elem-archive-cabinet",
+        "src": "/assets/four-seasons-study-components/letter-archive-cabinet.png",
+        "name": "书信柜",
+        "x": 832,
+        "y": 1023,
+        "w": 325,
+        "z": 9,
+        "category": "decoration",
+        "interaction": "shichen"
+      }
+    ],
+    "hotspots": [
+      {
+        "id": "hs-ancient",
+        "type": "ancient",
+        "x": 30,
+        "y": 25,
+        "w": 40,
+        "h": 30,
+        "label": "与客交谈"
+      },
+      {
+        "id": "hs-poetry",
+        "type": "poetry",
+        "x": 25,
+        "y": 70,
+        "w": 50,
+        "h": 10,
+        "label": "每日一诗"
+      },
+      {
+        "id": "hs-jieqi",
+        "type": "jieqi",
+        "x": 70,
+        "y": 5,
+        "w": 20,
+        "h": 15,
+        "label": "节气"
+      },
+      {
+        "id": "hs-calendar",
+        "type": "calendar",
+        "x": 5,
+        "y": 5,
+        "w": 20,
+        "h": 15,
+        "label": "万年历"
+      },
+      {
+        "id": "hs-flowers",
+        "type": "flowers",
+        "x": 75,
+        "y": 78,
+        "w": 15,
+        "h": 12,
+        "label": "花信"
+      },
+      {
+        "id": "hs-garden",
+        "type": "garden",
+        "x": 75,
+        "y": 78,
+        "w": 15,
+        "h": 12,
+        "label": "时令"
+      },
+      {
+        "id": "hs-shichen",
+        "type": "shichen",
+        "x": 75,
+        "y": 35,
+        "w": 15,
+        "h": 15,
+        "label": "时辰"
+      }
+    ]
+  }
+}

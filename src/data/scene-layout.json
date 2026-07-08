@@ -1,0 +1,338 @@
+{
+  "refW": 1280,
+  "refH": 720,
+  "assets": [
+    {
+      "id": "scene-0",
+      "src": "/assets/sky/sky-clear.jpg",
+      "name": "天空",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "z": 0,
+      "category": "sky"
+    },
+    {
+      "id": "scene-1",
+      "src": "/assets/sky/mountain-summer.jpg",
+      "name": "远山",
+      "x": 0,
+      "y": 58,
+      "w": 1280,
+      "z": 1,
+      "category": "sky"
+    },
+    {
+      "id": "scene-2",
+      "src": "/assets/ground/bridge-stone.png",
+      "name": "bridge-stone",
+      "x": 564,
+      "y": 529,
+      "w": 100,
+      "z": 8,
+      "category": "ground",
+      "rotation": -5
+    },
+    {
+      "id": "scene-3",
+      "src": "/assets/ground/stairs-straight.png",
+      "name": "stairs-straight",
+      "x": 403,
+      "y": 438,
+      "w": 90,
+      "z": 8,
+      "category": "ground",
+      "rotation": -25
+    },
+    {
+      "id": "scene-4",
+      "src": "/assets/ground/stairs-spiral.png",
+      "name": "stairs-spiral",
+      "x": 390,
+      "y": 265,
+      "w": 90,
+      "z": 8,
+      "category": "ground",
+      "rotation": -15
+    },
+    {
+      "id": "scene-5",
+      "src": "/assets/ground/bridge-stone.png",
+      "name": "bridge-stone",
+      "x": 749,
+      "y": 251,
+      "w": 90,
+      "z": 8,
+      "category": "ground",
+      "rotation": 20
+    },
+    {
+      "id": "scene-6",
+      "src": "/assets/ground/ground-courtyard.png",
+      "name": "庭院入口",
+      "x": 870,
+      "y": 517,
+      "w": 180,
+      "z": 15,
+      "category": "ground",
+      "isPlatform": true
+    },
+    {
+      "id": "scene-7",
+      "src": "/assets/building/building-gate.png",
+      "name": "building-gate",
+      "x": 910,
+      "y": 462,
+      "w": 100,
+      "z": 17,
+      "category": "building"
+    },
+    {
+      "id": "scene-8",
+      "src": "/assets/tree/tree-pine.png",
+      "name": "tree-pine",
+      "x": 860,
+      "y": 487,
+      "w": 70,
+      "z": 16,
+      "category": "tree"
+    },
+    {
+      "id": "scene-9",
+      "src": "/assets/building/stone-lantern.png",
+      "name": "stone-lantern",
+      "x": 997,
+      "y": 519,
+      "w": 35,
+      "z": 18,
+      "category": "building"
+    },
+    {
+      "id": "scene-10",
+      "src": "/assets/flower/flower-pomegranate.png",
+      "name": "flower-pomegranate",
+      "x": 987,
+      "y": 524,
+      "w": 45,
+      "z": 16,
+      "category": "flower"
+    },
+    {
+      "id": "scene-11",
+      "src": "/assets/ground/ground-watergarden.png",
+      "name": "水车花园",
+      "x": 192,
+      "y": 495,
+      "w": 180,
+      "z": 15,
+      "category": "ground",
+      "isPlatform": true
+    },
+    {
+      "id": "scene-12",
+      "src": "/assets/building/water-wheel.png",
+      "name": "water-wheel",
+      "x": 232,
+      "y": 445,
+      "w": 80,
+      "z": 17,
+      "category": "building"
+    },
+    {
+      "id": "scene-13",
+      "src": "/assets/tree/tree-willow.png",
+      "name": "tree-willow",
+      "x": 302,
+      "y": 455,
+      "w": 70,
+      "z": 16,
+      "category": "tree"
+    },
+    {
+      "id": "scene-14",
+      "src": "/assets/flower/flower-lotus.png",
+      "name": "flower-lotus",
+      "x": 209,
+      "y": 507,
+      "w": 45,
+      "z": 16,
+      "category": "flower"
+    },
+    {
+      "id": "scene-15",
+      "src": "/assets/building/stone-lantern.png",
+      "name": "stone-lantern",
+      "x": 207,
+      "y": 505,
+      "w": 30,
+      "z": 18,
+      "category": "building"
+    },
+    {
+      "id": "scene-16",
+      "src": "/assets/ground/ground-central.png",
+      "name": "中央花园",
+      "x": 514,
+      "y": 324,
+      "w": 200,
+      "z": 15,
+      "category": "ground",
+      "isPlatform": true
+    },
+    {
+      "id": "scene-17",
+      "src": "/assets/building/stone-tablet-jieqi.png",
+      "name": "stone-tablet-jieqi",
+      "x": 584,
+      "y": 289,
+      "w": 60,
+      "z": 17,
+      "category": "building",
+      "interaction": "jieqi"
+    },
+    {
+      "id": "scene-18",
+      "src": "/assets/tree/tree-bamboo.png",
+      "name": "tree-bamboo",
+      "x": 521,
+      "y": 301,
+      "w": 55,
+      "z": 16,
+      "category": "tree"
+    },
+    {
+      "id": "scene-19",
+      "src": "/assets/flower/flower-lotus.png",
+      "name": "flower-lotus",
+      "x": 646,
+      "y": 326,
+      "w": 55,
+      "z": 16,
+      "category": "flower"
+    },
+    {
+      "id": "scene-20",
+      "src": "/assets/crop/crop-summer-melon.png",
+      "name": "crop-summer-melon",
+      "x": 549,
+      "y": 339,
+      "w": 50,
+      "z": 16,
+      "category": "crop"
+    },
+    {
+      "id": "scene-21",
+      "src": "/assets/ground/ground-pavilion.png",
+      "name": "书院亭台",
+      "x": 192,
+      "y": 157,
+      "w": 180,
+      "z": 15,
+      "category": "ground",
+      "isPlatform": true
+    },
+    {
+      "id": "scene-22",
+      "src": "/assets/building/building-pavilion.png",
+      "name": "building-pavilion",
+      "x": 227,
+      "y": 92,
+      "w": 110,
+      "z": 17,
+      "category": "building"
+    },
+    {
+      "id": "scene-23",
+      "src": "/assets/tree/tree-plum.png",
+      "name": "tree-plum",
+      "x": 309,
+      "y": 124,
+      "w": 65,
+      "z": 16,
+      "category": "tree"
+    },
+    {
+      "id": "scene-24",
+      "src": "/assets/building/stone-lantern.png",
+      "name": "stone-lantern",
+      "x": 212,
+      "y": 162,
+      "w": 30,
+      "z": 18,
+      "category": "building"
+    },
+    {
+      "id": "scene-25",
+      "src": "/assets/ground/ground-observatory.png",
+      "name": "观星台",
+      "x": 870,
+      "y": 135,
+      "w": 180,
+      "z": 15,
+      "category": "ground",
+      "isPlatform": true
+    },
+    {
+      "id": "scene-26",
+      "src": "/assets/building/stone-tablet-poetry.png",
+      "name": "stone-tablet-poetry",
+      "x": 915,
+      "y": 105,
+      "w": 50,
+      "z": 17,
+      "category": "building",
+      "interaction": "poetry"
+    },
+    {
+      "id": "scene-27",
+      "src": "/assets/building/sundial.png",
+      "name": "sundial",
+      "x": 975,
+      "y": 130,
+      "w": 40,
+      "z": 17,
+      "category": "building"
+    },
+    {
+      "id": "scene-28",
+      "src": "/assets/tree/tree-maple.png",
+      "name": "tree-maple",
+      "x": 982,
+      "y": 102,
+      "w": 65,
+      "z": 16,
+      "category": "tree"
+    },
+    {
+      "id": "scene-29",
+      "src": "/assets/building/stone-lantern.png",
+      "name": "stone-lantern",
+      "x": 891,
+      "y": 146,
+      "w": 28,
+      "z": 18,
+      "category": "building"
+    },
+    {
+      "id": "scene-30",
+      "src": "/assets/npc/npc-libai.png",
+      "name": "古人NPC",
+      "x": 296,
+      "y": 134,
+      "w": 48,
+      "z": 25,
+      "category": "npc",
+      "interaction": "ancient"
+    },
+    {
+      "id": "scene-31",
+      "src": "/assets/char/char-stand-v2.png",
+      "name": "角色",
+      "x": 941,
+      "y": 542,
+      "w": 38,
+      "z": 30,
+      "category": "char"
+    }
+  ]
+}

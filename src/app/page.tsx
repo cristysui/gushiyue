@@ -1,30 +1,18 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useState, useCallback, useRef } from "react";
 import ScrollModal from "@/components/ScrollModal";
 import ChatModal from "@/components/ChatModal";
 import AuthModal from "@/components/AuthModal";
 import ColorBadge from "@/components/ColorBadge";
 import TagList from "@/components/TagList";
 import FloatingHeader from "@/components/FloatingHeader";
+import StudyScene from "@/components/scene/StudyScene";
+import DebugOverlay from "@/components/scene/DebugOverlay";
 import { useAuth } from "@/lib/auth";
 import { computeTodayData } from "@/lib/today-client";
 import { getRandomAncientClient } from "@/lib/ancients-client";
 import type { TodayData } from "@/lib/types";
-
-// 3D 场景动态导入（避免 SSR，静态导出兼容）
-const GardenScene = dynamic(() => import("@/components/scene/GardenScene"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="relative h-16 w-16">
-        <div className="h-16 w-16 rounded-full border-2 border-border/40" />
-        <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-t-2 border-accent" />
-      </div>
-    </div>
-  ),
-});
 
 interface Ancient {
   id: string; name: string; dynasty: string; birthYear: string;
@@ -41,7 +29,8 @@ export default function HomePage() {
   const [chatOpen, setChatOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [hint, setHint] = useState<string | null>(null);
+  const [debugMode, setDebugMode] = useState(false);
+  const sceneContainerRef = useRef<HTMLDivElement>(null);
 
   const { user, accessToken, signIn, signUp, signOut } = useAuth();
 
@@ -49,31 +38,61 @@ export default function HomePage() {
     setToday(computeTodayData());
     setAncient(getRandomAncientClient());
     setLoading(false);
+
+    // 检查 URL 是否有 debug 参数
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("debug") === "true") {
+        setDebugMode(true);
+      }
+    }
   }, []);
 
-  // 3D 场景交互回调
-  const handleReachAncient = useCallback(() => {
-    setHint("靠近了古人，点击可交谈");
-    // 自动打开对话
-    setTimeout(() => setChatOpen(true), 400);
-  }, []);
-
-  const handleReachPoetry = useCallback(() => {
-    setHint("走到了诗碑前");
-    setTimeout(() => setActiveModal("poem"), 400);
-  }, []);
-
-  const handleReachJieqi = useCallback(() => {
-    setHint("来到了节气碑前");
-    setTimeout(() => setActiveModal("jieqi"), 400);
-  }, []);
-
-  // 提示自动消失
+  // 快捷键 Ctrl+Shift+D
   useEffect(() => {
-    if (!hint) return;
-    const timer = setTimeout(() => setHint(null), 3000);
-    return () => clearTimeout(timer);
-  }, [hint]);
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === "D") {
+        e.preventDefault();
+        setDebugMode((prev) => {
+          const next = !prev;
+          const url = new URL(window.location.href);
+          if (next) url.searchParams.set("debug", "true");
+          else url.searchParams.delete("debug");
+          window.history.replaceState({}, "", url.toString());
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
+  // 场景交互回调
+  const handleSceneInteract = useCallback((type: string) => {
+    switch (type) {
+      case "ancient":
+        setTimeout(() => setChatOpen(true), 300);
+        break;
+      case "poetry":
+        setTimeout(() => setActiveModal("poem"), 300);
+        break;
+      case "jieqi":
+        setTimeout(() => setActiveModal("jieqi"), 300);
+        break;
+      case "calendar":
+        setTimeout(() => setActiveModal("calendar"), 300);
+        break;
+      case "flowers":
+        setTimeout(() => setActiveModal("flowers"), 300);
+        break;
+      case "garden":
+        setTimeout(() => setActiveModal("garden"), 300);
+        break;
+      case "shichen":
+        setTimeout(() => setActiveModal("shichen"), 300);
+        break;
+    }
+  }, []);
 
   const handleReplaceAncient = () => {
     setAncient(getRandomAncientClient());
@@ -81,93 +100,70 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center space-y-4">
+      <div className="flex min-h-screen flex-col items-center justify-center space-y-4" style={{ background: "linear-gradient(180deg, #d4c5a0 0%, #a3c1a0 100%)" }}>
         <div className="relative h-16 w-16">
-          <div className="h-16 w-16 rounded-full border-2 border-border/40" />
-          <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-t-2 border-accent" />
+          <div className="h-16 w-16 rounded-full border-2 border-[#d6cfc0]" />
+          <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-t-2 border-[#b8860b]" />
         </div>
-        <p className="title-serif text-sm tracking-widest text-muted">研墨展卷中…</p>
       </div>
     );
   }
 
   return (
     <div className="fixed inset-0 overflow-hidden">
-      {/* ===== 3D 庭院场景（全屏底图）===== */}
-      <div className="absolute inset-0">
-        <GardenScene
-          ancient={ancient}
-          onReachAncient={handleReachAncient}
-          onReachPoetry={handleReachPoetry}
-          onReachJieqi={handleReachJieqi}
-        />
+      {/* ===== 场景 ===== */}
+      <div ref={sceneContainerRef} className="absolute inset-0">
+        <StudyScene ancient={ancient} onInteract={handleSceneInteract} containerRef={sceneContainerRef} debugMode={debugMode} />
       </div>
 
-      {/* ===== 透明浮动 Header ===== */}
-      <FloatingHeader today={today} />
-
-      {/* ===== 右上角：用户区 ===== */}
-      <div className="fixed right-3 top-14 z-30 flex items-center gap-2">
-        {user ? (
-          <div className="flex items-center gap-2">
-            <span className="rounded-lg bg-dark/60 px-2.5 py-1.5 text-xs text-paper/80"
-              style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
-            >
-              {user.email?.split("@")[0]}
-            </span>
-            <button
-              onClick={() => signOut()}
-              className="rounded-lg bg-dark/60 px-2.5 py-1.5 text-xs text-paper/60 hover:text-paper"
-              style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
-            >
-              登出
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setAuthOpen(true)}
-            className="rounded-lg bg-dark/60 px-3 py-1.5 text-xs text-paper hover:bg-dark/80"
-            style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
-          >
-            登入
-          </button>
-        )}
-      </div>
-
-      {/* ===== 底部操作提示 ===== */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-3 pb-4">
-        <div className="flex items-center gap-3 rounded-full px-4 py-2"
-          style={{
-            background: "rgba(28, 25, 23, 0.5)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(196, 166, 122, 0.1)",
+      {/* ===== Debug 拖拽层 ===== */}
+      {debugMode && (
+        <DebugOverlay
+          containerRef={sceneContainerRef}
+          onExit={() => {
+            setDebugMode(false);
+            const url = new URL(window.location.href);
+            url.searchParams.delete("debug");
+            window.history.replaceState({}, "", url.toString());
           }}
-        >
-          <span className="text-xs text-paper/50">点击地面行走</span>
-          <span className="text-paper/20">|</span>
-          <span className="text-xs text-paper/50">靠近古人交谈</span>
-          <span className="text-paper/20">|</span>
-          <span className="text-xs text-paper/50">探索石碑</span>
-        </div>
-      </div>
+        />
+      )}
 
-      {/* ===== 交互提示气泡 ===== */}
-      {hint && (
-        <div className="animate-bubble-in fixed left-1/2 top-20 z-40 -translate-x-1/2">
-          <div className="rounded-full px-4 py-2 text-xs text-paper"
-            style={{
-              background: "rgba(28, 25, 23, 0.85)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(196, 166, 122, 0.3)",
-            }}
-          >
-            {hint}
-          </div>
+      {/* ===== 透明浮动 Header（非 Debug 时显示）===== */}
+      {!debugMode && <FloatingHeader today={today} />}
+
+      {/* ===== 右上角：用户区（非 Debug 时显示）===== */}
+      {!debugMode && (
+        <div className="fixed right-3 top-14 z-30 flex items-center gap-2">
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="rounded-lg bg-dark/60 px-2.5 py-1.5 text-xs text-paper/80"
+                style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
+              >
+                {user.email?.split("@")[0]}
+              </span>
+              <button
+                onClick={() => signOut()}
+                className="rounded-lg bg-dark/60 px-2.5 py-1.5 text-xs text-paper/60 hover:text-paper"
+                style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
+              >
+                登出
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="rounded-lg bg-dark/60 px-3 py-1.5 text-xs text-paper hover:bg-dark/80"
+              style={{ backdropFilter: "blur(8px)", border: "1px solid rgba(196,166,122,0.15)" }}
+            >
+              登入
+            </button>
+          )}
         </div>
       )}
 
-      {/* ===== 右下角：换古人按钮 ===== */}
-      {ancient && !chatOpen && (
+      {/* ===== 右下角：换古人按钮（非 Debug 时显示）===== */}
+      {!debugMode && ancient && !chatOpen && (
         <button
           onClick={handleReplaceAncient}
           className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-paper transition-all hover:scale-105"
@@ -182,14 +178,27 @@ export default function HomePage() {
         </button>
       )}
 
-      {/* ===== 卷轴弹窗：万年历 ===== */}
-      <ScrollModal
-        open={activeModal === "calendar"}
-        onClose={() => setActiveModal(null)}
-        title="万年历"
-        subtitle={today?.date}
-        sealText="宜忌"
-      >
+      {/* ===== 左下角：Debug 按钮（非 Debug 时显示）===== */}
+      {!debugMode && (
+        <button
+          onClick={() => {
+            setDebugMode(true);
+            const url = new URL(window.location.href);
+            url.searchParams.set("debug", "true");
+            window.history.replaceState({}, "", url.toString());
+          }}
+          className="fixed bottom-5 left-5 z-30 rounded-full px-3 py-1.5 text-xs text-paper/50 transition hover:text-paper"
+          style={{
+            background: "rgba(28, 25, 23, 0.3)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          Debug
+        </button>
+      )}
+
+      {/* ===== 卷轴弹窗 ===== */}
+      <ScrollModal open={activeModal === "calendar"} onClose={() => setActiveModal(null)} title="万年历" subtitle={today?.date} sealText="宜忌">
         {today && (
           <div className="space-y-5">
             <div>
@@ -214,14 +223,7 @@ export default function HomePage() {
         )}
       </ScrollModal>
 
-      {/* ===== 卷轴弹窗：节气生活 ===== */}
-      <ScrollModal
-        open={activeModal === "jieqi"}
-        onClose={() => setActiveModal(null)}
-        title={today?.jieqiInfo?.name ?? "节气"}
-        subtitle={today?.jieqiInfo?.period}
-        sealText="节气"
-      >
+      <ScrollModal open={activeModal === "jieqi"} onClose={() => setActiveModal(null)} title={today?.jieqiInfo?.name ?? "节气"} subtitle={today?.jieqiInfo?.period} sealText="节气">
         {today?.jieqiInfo && (
           <div className="space-y-4">
             <p className="text-sm leading-relaxed text-ink-light">{today.jieqiInfo.intro}</p>
@@ -243,13 +245,7 @@ export default function HomePage() {
         )}
       </ScrollModal>
 
-      {/* ===== 卷轴弹窗：每日一诗 ===== */}
-      <ScrollModal
-        open={activeModal === "poem"}
-        onClose={() => setActiveModal(null)}
-        title="每日一诗"
-        sealText="诗"
-      >
+      <ScrollModal open={activeModal === "poem"} onClose={() => setActiveModal(null)} title="每日一诗" sealText="诗">
         {today?.dailyPoem && (
           <div className="space-y-3 text-center">
             <p className="title-serif text-xl font-bold text-ink">{today.dailyPoem.title}</p>
@@ -265,14 +261,7 @@ export default function HomePage() {
         )}
       </ScrollModal>
 
-      {/* ===== 卷轴弹窗：时令蔬果 ===== */}
-      <ScrollModal
-        open={activeModal === "garden"}
-        onClose={() => setActiveModal(null)}
-        title="时令蔬果"
-        subtitle="顺时而食 · 应季而餐"
-        sealText="食"
-      >
+      <ScrollModal open={activeModal === "garden"} onClose={() => setActiveModal(null)} title="时令蔬果" subtitle="顺时而食 · 应季而餐" sealText="食">
         {today && (
           <div className="space-y-4">
             <div>
@@ -287,67 +276,47 @@ export default function HomePage() {
         )}
       </ScrollModal>
 
-      {/* ===== 卷轴弹窗：当月花信 ===== */}
       <ScrollModal
         open={activeModal === "flowers"}
         onClose={() => setActiveModal(null)}
-        title="当月花信"
+        title="花信风"
         subtitle="二十四番花信风"
         sealText="花"
       >
-        {today && (
-          <div className="space-y-4">
-            <TagList items={today.flowers} />
-            <div className="border-t border-scroll-edge/15 pt-3">
-              <p className="text-xs leading-relaxed text-muted">
-                花信风，自小寒至谷雨，每候一花，以花为期。
-                梅花先行，杨花殿后，八气二十四候，得二十四番花信。
-              </p>
-            </div>
-          </div>
-        )}
+        <div className="space-y-3 text-center">
+          <p className="title-serif text-lg font-bold text-ink">花信风</p>
+          <p className="text-sm text-ink-light">
+            小寒至谷雨，八气二十四候，每候应一花信。
+          </p>
+        </div>
       </ScrollModal>
 
-      {/* ===== 卷轴弹窗：当下时辰 ===== */}
       <ScrollModal
         open={activeModal === "shichen"}
         onClose={() => setActiveModal(null)}
-        title={today?.currentShichen?.name ?? "时辰"}
-        subtitle={today?.currentShichen?.time}
+        title="十二时辰"
+        subtitle="日出而作 · 日入而息"
         sealText="时"
       >
-        {today?.currentShichen && (
-          <div className="space-y-4">
-            <p className="text-center text-sm text-accent2">{today.currentShichen.meridian}</p>
-            <div className="rounded-lg bg-scroll-edge/5 p-3 text-center">
-              <p className="text-sm text-ink">
-                古人此时：<span className="title-serif font-bold text-accent">{today.currentShichen.activity}</span>
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="title-serif mb-1.5 text-xs font-semibold text-jade">宜</p>
-                <TagList items={today.currentShichen.suitable} variant="yi" />
-              </div>
-              <div>
-                <p className="title-serif mb-1.5 text-xs font-semibold text-accent2">忌</p>
-                <TagList items={today.currentShichen.avoid} variant="ji" />
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="space-y-3 text-center">
+          <p className="title-serif text-lg font-bold text-ink">十二时辰</p>
+          <p className="text-sm text-ink-light">
+            子丑寅卯辰巳午未申酉戌亥，一日十二时，时辰各有当令。
+          </p>
+        </div>
       </ScrollModal>
 
-      {/* ===== 古人对话弹窗 ===== */}
-      <ChatModal
-        open={chatOpen}
-        onClose={() => setChatOpen(false)}
-        ancient={ancient}
-        currentShichenActivity={today?.currentShichen?.activity}
-        accessToken={accessToken}
-      />
+      {/* ===== 对话弹窗 ===== */}
+      {ancient && (
+        <ChatModal
+          open={chatOpen}
+          onClose={() => setChatOpen(false)}
+          ancient={ancient}
+          accessToken={accessToken}
+        />
+      )}
 
-      {/* ===== 登录/注册弹窗 ===== */}
+      {/* ===== 登入弹窗 ===== */}
       <AuthModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
