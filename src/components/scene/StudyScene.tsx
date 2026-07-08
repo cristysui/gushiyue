@@ -363,8 +363,8 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 />
                 {ancient && (
                   <span
-                    className="title-serif absolute left-0 right-0 flex items-center justify-center text-ink"
-                    style={{ fontSize: `${asset.w * 0.12}px`, letterSpacing: "0.1em", bottom: "12px" }}
+                    className="title-serif absolute inset-0 flex items-center justify-center text-ink"
+                    style={{ fontSize: `${asset.w * 0.12}px`, letterSpacing: "0.1em" }}
                   >
                     {ancient.name}
                   </span>
