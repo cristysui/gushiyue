@@ -373,8 +373,8 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 />
                 {ancient && (
                   <span
-                    className="title-serif absolute inset-0 flex items-center justify-center text-ink"
-                    style={{ fontSize: `${asset.w * 0.16}px`, letterSpacing: "0.1em" }}
+                    className="title-serif absolute left-0 right-0 flex items-center justify-center text-ink"
+                    style={{ fontSize: `${asset.w * 0.12}px`, letterSpacing: "0.1em", bottom: "12px" }}
                   >
                     {ancient.name}
                   </span>
@@ -466,14 +466,14 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 <div
                   className="text-almanac absolute flex flex-col items-center justify-center text-center"
                   style={{
-                    top: "10%",
+                    top: "calc(10% + 36px)",
                     left: "14%",
                     right: "14%",
                     bottom: "35%",
                     overflow: "hidden",
                   }}
                 >
-                  <p style={{ fontSize: `${asset.w * 0.085}px`, fontWeight: 700, lineHeight: 1.1 }}>{today.date}</p>
+                  <p style={{ fontSize: `${asset.w * 0.07}px`, fontWeight: 700, lineHeight: 1.1 }}>{today.date}</p>
                   <p style={{ fontSize: `${asset.w * 0.065}px`, opacity: 0.8, marginTop: "3px" }}>{today.weekday}</p>
                   <p style={{ fontSize: `${asset.w * 0.07}px`, opacity: 0.85, marginTop: "3px" }}>{today.lunarDateShort}</p>
                   {today.wuxing && (
