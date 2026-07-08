@@ -462,13 +462,22 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   alt={asset.name}
                   style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
-                {/* 日期文字叠加 */}
-                <div className="text-almanac absolute inset-0 flex flex-col items-center justify-center px-[8%] pt-[5%]">
-                  <p style={{ fontSize: `${asset.w * 0.09}px`, fontWeight: 600 }}>{today.lunarDate}</p>
-                  <p style={{ fontSize: `${asset.w * 0.06}px`, opacity: 0.8, marginTop: "4px" }}>{today.date}</p>
-                  <p style={{ fontSize: `${asset.w * 0.07}px`, color: "#c44536", marginTop: "4px" }}>{today.jieqi}</p>
+                {/* 日期文字叠加：限制在牌面上半区域，防止溢出 */}
+                <div
+                  className="text-almanac absolute flex flex-col items-center justify-center text-center"
+                  style={{
+                    top: "8%",
+                    left: "12%",
+                    right: "12%",
+                    bottom: "45%",
+                    overflow: "hidden",
+                  }}
+                >
+                  <p style={{ fontSize: `${asset.w * 0.07}px`, fontWeight: 600, lineHeight: 1.2 }}>{today.lunarDate}</p>
+                  <p style={{ fontSize: `${asset.w * 0.045}px`, opacity: 0.8, marginTop: "2px" }}>{today.date}</p>
+                  <p style={{ fontSize: `${asset.w * 0.055}px`, color: "#c44536", marginTop: "3px" }}>{today.jieqi}</p>
                   {today.wuxing && (
-                    <p style={{ fontSize: `${asset.w * 0.055}px`, opacity: 0.7, marginTop: "3px" }}>{today.wuxing}日</p>
+                    <p style={{ fontSize: `${asset.w * 0.04}px`, opacity: 0.7, marginTop: "2px" }}>{today.wuxing}日</p>
                   )}
                 </div>
                 {/* 交互标记 */}

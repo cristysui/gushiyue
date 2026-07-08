@@ -56,7 +56,7 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
         <div className={`flex items-center gap-3 px-4 ${isMobile ? "py-2" : "py-2.5"}`}>
           {/* 左侧：标题 + 核心历法信息 */}
           <span className="font-title text-lg text-paper sm:text-xl" style={{ letterSpacing: "0.05em" }}>
-            四时书斋
+            古时月
           </span>
 
           <span className="text-paper/20">|</span>
