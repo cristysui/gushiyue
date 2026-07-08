@@ -464,10 +464,10 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   }}
                 >
                   <p style={{ fontSize: `${asset.w * 0.07}px`, fontWeight: 700, lineHeight: 1.1 }}>{today.date}</p>
-                  <p style={{ fontSize: `${asset.w * 0.065}px`, opacity: 0.8, marginTop: "3px" }}>{today.weekday}</p>
-                  <p style={{ fontSize: `${asset.w * 0.07}px`, opacity: 0.85, marginTop: "3px" }}>{today.lunarDateShort}</p>
+                  <p style={{ fontSize: `${asset.w * 0.07}px`, opacity: 0.85, marginTop: "8px" }}>{today.lunarDateShort}</p>
+                  <p style={{ fontSize: `${asset.w * 0.065}px`, opacity: 0.8, marginTop: "6px" }}>{today.weekday}</p>
                   {today.wuxing && (
-                    <p style={{ fontSize: `${asset.w * 0.06}px`, opacity: 0.7, marginTop: "3px" }}>{today.wuxing}日</p>
+                    <p style={{ fontSize: `${asset.w * 0.06}px`, opacity: 0.7, marginTop: "8px" }}>{today.wuxing}日</p>
                   )}
                 </div>
                 {/* 交互标记 */}
