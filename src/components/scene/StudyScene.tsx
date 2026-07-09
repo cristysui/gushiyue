@@ -126,6 +126,14 @@ function SceneImage({ src, alt, eager = false, style }: { src: string; alt: stri
   );
 }
 
+// ===== 古人 ID → 专属坐像图片映射 =====
+const ANCIENT_IMAGE_MAP: Record<string, string> = {
+  liqingzhao: "/assets/four-seasons-study-components/li_qingzhao_seated.webp",
+  baijuyi: "/assets/four-seasons-study-components/bai_juyi_seated.webp",
+  taoyuanming: "/assets/four-seasons-study-components/tao_yuanming_seated.webp",
+  wangyangming: "/assets/four-seasons-study-components/wang_yangming_seated.webp",
+};
+
 // ===== 交互标记颜色映射 =====
 const INTERACTION_COLORS: Record<string, string> = {
   ancient: "#c44536",
@@ -302,7 +310,7 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
               >
                 <SceneImage
-                  src={asset.src}
+                  src={ancient && ANCIENT_IMAGE_MAP[ancient.id] ? ANCIENT_IMAGE_MAP[ancient.id] : asset.src}
                   alt={ancient?.name ?? "古人"}
                   style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
                 />
