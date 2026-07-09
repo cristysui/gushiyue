@@ -259,13 +259,22 @@ body {
     to { opacity: 1; }
   }
 
+  /* 兜底动画：3秒后强制显示图片 */
+  @keyframes img-fallback-show {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
   .scene-img {
     opacity: 0;
     transition: opacity 0.4s ease-in;
+    /* 兜底：3秒后强制显示，防止 onLoad 未触发时图片永久透明 */
+    animation: img-fallback-show 0.4s ease-in 3s forwards;
   }
 
   .scene-img.loaded {
     opacity: 1;
+    animation: none;
   }
 }
 

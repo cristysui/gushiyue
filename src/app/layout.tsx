@@ -21,10 +21,28 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* 异步加载字体：先用 print 媒体查询避免阻塞渲染，加载完成后切换为 all */}
         <link
           href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap"
           rel="stylesheet"
+          media="print"
         />
+        <noscript>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+            rel="stylesheet"
+          />
+        </noscript>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            var link = document.querySelector('link[media="print"]');
+            if (link) {
+              link.addEventListener('load', function() { link.media = 'all'; });
+              // 3秒后强制加载，防止字体加载失败阻塞
+              setTimeout(function() { link.media = 'all'; }, 3000);
+            }
+          })();
+        `}} />
       </head>
       <body className="min-h-screen bg-bg text-ink antialiased">
         {children}

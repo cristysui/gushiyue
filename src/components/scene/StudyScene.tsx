@@ -47,10 +47,22 @@ interface Hotspot {
 const fileLayout = studyLayoutData as StudyLayout;
 
 // ===== localStorage 读取（覆盖文件配置）=====
+// localStorage 布局版本号：每次更新布局文件后递增，使旧缓存自动失效
+const LAYOUT_VERSION = 2;
+
 function loadLocalLayout(isPortrait: boolean): LayoutAsset[] | null {
   if (typeof window === "undefined") return null;
   const key = isPortrait ? "gushiyue-study-layout-portrait" : "gushiyue-study-layout";
+  const versionKey = "gushiyue-study-layout-version";
   try {
+    // 版本不匹配时清除旧缓存
+    const cachedVersion = localStorage.getItem(versionKey);
+    if (cachedVersion !== String(LAYOUT_VERSION)) {
+      localStorage.removeItem("gushiyue-study-layout");
+      localStorage.removeItem("gushiyue-study-layout-portrait");
+      localStorage.setItem(versionKey, String(LAYOUT_VERSION));
+      return null;
+    }
     const raw = localStorage.getItem(key);
     if (!raw) return null;
     const data = JSON.parse(raw);
@@ -112,14 +124,26 @@ function WeatherParticles({ type }: { type: WeatherType }) {
 // ===== 带淡入动画的场景图片 =====
 function SceneImage({ src, alt, eager = false, style }: { src: string; alt: string; eager?: boolean; style?: React.CSSProperties }) {
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  // 修复：浏览器缓存命中时 onLoad 可能在 React 挂载前已触发
+  // 检查 img.complete && naturalWidth > 0 兜底
+  useEffect(() => {
+    if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
+      setLoaded(true);
+    }
+  }, [src]);
+
   return (
     <img
+      ref={imgRef}
       src={src}
       alt={alt}
       draggable={false}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
       onLoad={() => setLoaded(true)}
+      onError={() => setLoaded(true)}
       className={`scene-img ${loaded ? "loaded" : ""}`}
       style={style}
     />
