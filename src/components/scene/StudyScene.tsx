@@ -319,6 +319,29 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                 </div>
               );
             }
+            // 窗外山水画背景：上移30%
+            if (asset.id === "layer-window-bg") {
+              return (
+                <SceneImage
+                  key={asset.id}
+                  src={asset.src}
+                  alt={asset.name}
+                  eager
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: `${refW}px`,
+                    height: `${refH}px`,
+                    objectFit: "cover",
+                    objectPosition: "center 30%",
+                    zIndex: asset.z,
+                    opacity: asset.opacity ?? 1,
+                    pointerEvents: "none",
+                  }}
+                />
+              );
+            }
             return (
               <SceneImage
                 key={asset.id}
@@ -342,14 +365,14 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
 
           // 古人访客特殊处理（叠加名牌 + 交互标记）
           if (asset.id === "elem-ancient-guest") {
-            // 专属坐像图片需缩小10%并下移10%
+            // 专属坐像图片需缩小10%并上移10%
             const hasCustomImg = ancient && ANCIENT_IMAGE_MAP[ancient.id];
             const scale = hasCustomImg ? 0.9 : 1;
             const imgW = asset.w * scale;
             // 水平居中保持不变（偏移补偿缩小的宽度）
             const imgX = asset.x + (asset.w - imgW) / 2;
-            // 向下移动约10%（基于素材宽度估算）
-            const imgY = asset.y + asset.w * 0.1;
+            // 向上移动约10%
+            const imgY = asset.y - asset.w * 0.1;
             return (
               <div
                 key={asset.id}
