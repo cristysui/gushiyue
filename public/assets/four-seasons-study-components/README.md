@@ -8,6 +8,7 @@ These PNG assets were prepared from the selected "清供书斋" visual direction
 - `solar-term-flower-branch.png` - seasonal plant object for solar-term changes.
 - `wuxing-clothing-chest.png` - five-color clothing guide object.
 - `seasonal-produce-basket.png` - seasonal produce basket.
+- `poetry-book-shijing.jpg` - traditional thread-bound book (诗经) for daily poetry entry.
 - `ancient-guest-scholar.png` - daily ancient guest character layer.
 - `visitor-name-plaque-blank.png` - blank visitor name plaque for dynamic guest text.
 - `letter-archive-cabinet.png` - letter/archive cabinet for chat history state.

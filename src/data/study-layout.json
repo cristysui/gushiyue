@@ -93,6 +93,17 @@
       "interaction": "garden"
     },
     {
+      "id": "elem-poetry-book",
+      "src": "/assets/four-seasons-study-components/shijing_book.webp",
+      "name": "诗经",
+      "x": 860,
+      "y": 870,
+      "w": 120,
+      "z": 11,
+      "category": "decoration",
+      "interaction": "poetry"
+    },
+    {
       "id": "elem-archive-cabinet",
       "src": "/assets/four-seasons-study-components/letter-archive-cabinet.webp",
       "name": "书信柜",
@@ -126,6 +137,17 @@
       "label": "应季蔬果"
     },
     {
+      "id": "label-poetry",
+      "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+      "name": "诗经牌",
+      "x": 535,
+      "y": 835,
+      "w": 85,
+      "z": 13,
+      "category": "label",
+      "label": "每日一诗"
+    },
+    {
       "id": "label-archive",
       "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
       "name": "信匣牌",
@@ -154,7 +176,7 @@
       "x": 465,
       "y": 32,
       "w": 908,
-      "z": 4,
+      "z": 6,
       "category": "character",
       "interaction": "ancient",
       "locked": true
@@ -281,7 +303,7 @@
         "x": 111,
         "y": 366,
         "w": 1006,
-        "z": 4,
+        "z": 6,
         "category": "character",
         "interaction": "ancient",
         "locked": false
@@ -353,6 +375,17 @@
         "interaction": "garden"
       },
       {
+        "id": "elem-poetry-book",
+        "src": "/assets/four-seasons-study-components/shijing_book.webp",
+        "name": "诗经",
+        "x": 375,
+        "y": 1300,
+        "w": 110,
+        "z": 11,
+        "category": "decoration",
+        "interaction": "poetry"
+      },
+      {
         "id": "elem-archive-cabinet",
         "src": "/assets/four-seasons-study-components/letter-archive-cabinet.webp",
         "name": "书信柜",
@@ -384,6 +417,17 @@
         "z": 13,
         "category": "label",
         "label": "应季蔬果"
+      },
+      {
+        "id": "label-poetry",
+        "src": "/assets/four-seasons-study-components/module-label-plaque-blank.webp",
+        "name": "诗经牌",
+        "x": 330,
+        "y": 1320,
+        "w": 70,
+        "z": 13,
+        "category": "label",
+        "label": "每日一诗"
       },
       {
         "id": "label-archive",

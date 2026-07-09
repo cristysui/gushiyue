@@ -264,6 +264,37 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
 
           // 背景类素材铺满画布（首屏 eager 加载）
           if (asset.category === "fixed") {
+            // 前景书案：铺满画布 + 拦截点击事件，防止后方古人被误触
+            if (asset.id === "layer-foreground-desk") {
+              return (
+                <div
+                  key={asset.id}
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: `${refW}px`,
+                    height: `${refH}px`,
+                    zIndex: asset.z,
+                    pointerEvents: "auto",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <SceneImage
+                    src={asset.src}
+                    alt={asset.name}
+                    eager
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      opacity: asset.opacity ?? 1,
+                      pointerEvents: "none",
+                    }}
+                  />
+                </div>
+              );
+            }
             return (
               <SceneImage
                 key={asset.id}
