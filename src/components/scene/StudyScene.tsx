@@ -7,6 +7,12 @@ import { useSceneScale } from "./useSceneScale";
 // ===== 类型 =====
 type HotspotType = "ancient" | "poetry" | "jieqi" | "calendar" | "flowers" | "shichen" | "garden";
 
+interface AncientLayoutOverride {
+  x: number;
+  y: number;
+  w: number;
+}
+
 interface LayoutAsset {
   id: string;
   src: string;
@@ -21,6 +27,7 @@ interface LayoutAsset {
   interaction?: string;
   locked?: boolean;
   label?: string;
+  ancientLayouts?: Record<string, AncientLayoutOverride>;
 }
 
 interface OrientationLayout {
@@ -48,7 +55,7 @@ const fileLayout = studyLayoutData as StudyLayout;
 
 // ===== localStorage 读取（覆盖文件配置）=====
 // localStorage 布局版本号：每次更新布局文件后递增，使旧缓存自动失效
-const LAYOUT_VERSION = 2;
+const LAYOUT_VERSION = 3;
 
 function loadLocalLayout(isPortrait: boolean): LayoutAsset[] | null {
   if (typeof window === "undefined") return null;
@@ -365,14 +372,12 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
 
           // 古人访客特殊处理（叠加名牌 + 交互标记）
           if (asset.id === "elem-ancient-guest") {
-            // 专属坐像图片需缩小10%并上移10%
+            // 专属坐像：使用 per-ancient 布局配置，无配置则回退到默认 asset 坐标
             const hasCustomImg = ancient && ANCIENT_IMAGE_MAP[ancient.id];
-            const scale = hasCustomImg ? 0.9 : 1;
-            const imgW = asset.w * scale;
-            // 水平居中保持不变（偏移补偿缩小的宽度）
-            const imgX = asset.x + (asset.w - imgW) / 2;
-            // 向上移动约10%
-            const imgY = asset.y - asset.w * 0.1;
+            const ancientOverride = ancient && asset.ancientLayouts?.[ancient.id];
+            const imgW = ancientOverride?.w ?? asset.w;
+            const imgX = ancientOverride?.x ?? asset.x;
+            const imgY = ancientOverride?.y ?? asset.y;
             return (
               <div
                 key={asset.id}

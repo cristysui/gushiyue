@@ -7,6 +7,12 @@ import { useSceneScale } from "./useSceneScale";
 // ===== 类型 =====
 export type InteractionType = "ancient" | "poetry" | "jieqi" | "calendar" | "flowers" | "shichen" | "garden" | null;
 
+interface AncientLayoutOverride {
+  x: number;
+  y: number;
+  w: number;
+}
+
 interface LayoutAsset {
   id: string;
   src: string;
@@ -20,6 +26,7 @@ interface LayoutAsset {
   category?: string;
   interaction?: InteractionType;
   locked?: boolean;
+  ancientLayouts?: Record<string, AncientLayoutOverride>;
 }
 
 interface OrientationLayout {
@@ -274,6 +281,21 @@ const CATEGORY_LABELS: Record<string, string> = {
   "four-seasons-study-components": "书斋组件",
 };
 
+// ===== 古人专属坐像映射（与 StudyScene 保持一致）=====
+const ANCIENT_IMAGE_MAP: Record<string, string> = {
+  liqingzhao: "/assets/four-seasons-study-components/li_qingzhao_seated.webp",
+  baijuyi: "/assets/four-seasons-study-components/bai_juyi_seated.webp",
+  taoyuanming: "/assets/four-seasons-study-components/tao_yuanming_seated.webp",
+  wangyangming: "/assets/four-seasons-study-components/wang_yangming_seated.webp",
+};
+
+const ANCIENT_NAMES: Record<string, string> = {
+  liqingzhao: "李清照",
+  baijuyi: "白居易",
+  taoyuanming: "陶渊明",
+  wangyangming: "王阳明",
+};
+
 // ===== 主组件 =====
 interface DebugOverlayProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -290,6 +312,8 @@ export default function DebugOverlay({ containerRef, onExit }: DebugOverlayProps
   const [activeCategory, setActiveCategory] = useState<string>("building");
   const [searchQuery, setSearchQuery] = useState("");
   const [manifest, setManifest] = useState<Record<string, string[]>>({});
+  // Debug 模式下当前编辑的古人 ID（用于切换人物图片预览和编辑 per-ancient 布局）
+  const [debugAncientId, setDebugAncientId] = useState<string>("liqingzhao");
 
   // 等比缩放（与 StudyScene 共用同一个 hook，自动检测横竖屏）
   const { scale, offsetX, offsetY, refW, refH, isPortrait } = useSceneScale(containerRef);
@@ -309,6 +333,22 @@ export default function DebugOverlay({ containerRef, onExit }: DebugOverlayProps
     }
     setSelectedId(null);
   }, [isPortrait, orientationLayout.assets]);
+
+  // ===== 切换古人时同步画布上的 ancient-guest 顶层坐标 =====
+  useEffect(() => {
+    setAssets((prev) => prev.map((a) => {
+      if (a.id !== "elem-ancient-guest") return a;
+      if (debugAncientId === "default") {
+        // 恢复默认图片，不使用 override
+        return a;
+      }
+      const override = a.ancientLayouts?.[debugAncientId];
+      if (override) {
+        return { ...a, x: override.x, y: override.y, w: override.w };
+      }
+      return a;
+    }));
+  }, [debugAncientId]);
 
   // ===== 加载素材库 manifest =====
   useEffect(() => {
@@ -331,8 +371,31 @@ export default function DebugOverlay({ containerRef, onExit }: DebugOverlayProps
 
   // ===== 操作函数 =====
   const updateAsset = useCallback((id: string, changes: Partial<LayoutAsset>) => {
-    setAssets((prev) => prev.map((a) => (a.id === id ? { ...a, ...changes } : a)));
-  }, []);
+    setAssets((prev) => prev.map((a) => {
+      if (a.id !== id) return a;
+      // 如果是古人访客且有专属图片，x/y/w 变更写入 ancientLayouts
+      if (a.id === "elem-ancient-guest" && ANCIENT_IMAGE_MAP[debugAncientId]) {
+        const layout = a.ancientLayouts?.[debugAncientId] ?? { x: a.x, y: a.y, w: a.w };
+        const updatedLayout = {
+          x: changes.x !== undefined ? changes.x : layout.x,
+          y: changes.y !== undefined ? changes.y : layout.y,
+          w: changes.w !== undefined ? changes.w : layout.w,
+        };
+        return {
+          ...a,
+          ancientLayouts: {
+            ...a.ancientLayouts,
+            [debugAncientId]: updatedLayout,
+          },
+          // 同步更新顶层 x/y/w 以便画布渲染
+          x: updatedLayout.x,
+          y: updatedLayout.y,
+          w: updatedLayout.w,
+        };
+      }
+      return { ...a, ...changes };
+    }));
+  }, [debugAncientId]);
 
   const handleSetInteraction = useCallback((type: InteractionType) => {
     if (!selectedId) return;
@@ -383,6 +446,15 @@ export default function DebugOverlay({ containerRef, onExit }: DebugOverlayProps
         y: Math.round(a.y),
         w: Math.round(a.w),
         z: Math.round(a.z),
+        // 四舍五入 per-ancient 布局
+        ancientLayouts: a.ancientLayouts
+          ? Object.fromEntries(
+              Object.entries(a.ancientLayouts).map(([k, v]) => [
+                k,
+                { x: Math.round(v.x), y: Math.round(v.y), w: Math.round(v.w) },
+              ])
+            )
+          : undefined,
       })),
       hotspots: orientationLayout.hotspots,
     };
@@ -498,6 +570,28 @@ export default function DebugOverlay({ containerRef, onExit }: DebugOverlayProps
         >
           <span className="max-w-[120px] truncate text-xs text-paper/80">{selectedAsset.name}</span>
           <span className="text-paper/20">|</span>
+          {/* 古人图片切换（仅古人访客选中时显示） */}
+          {selectedAsset.id === "elem-ancient-guest" && (
+            <>
+              <span className="text-[10px] text-paper/50">人物:</span>
+              <select
+                value={debugAncientId}
+                onChange={(e) => setDebugAncientId(e.target.value)}
+                className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-paper outline-none"
+                style={{ border: "1px solid rgba(196,166,122,0.3)" }}
+              >
+                {Object.entries(ANCIENT_NAMES).map(([id, name]) => (
+                  <option key={id} value={id} className="bg-stone-800 text-paper">
+                    {name}
+                  </option>
+                ))}
+                <option value="default" className="bg-stone-800 text-paper">
+                  默认(通用)
+                </option>
+              </select>
+              <span className="text-paper/20">|</span>
+            </>
+          )}
           <button onClick={() => handleZOrder("front")} title="置顶" className="rounded px-1.5 py-0.5 text-[10px] text-paper/70 hover:bg-white/10">⤒</button>
           <button onClick={() => handleZOrder("forward")} title="上移" className="rounded px-1.5 py-0.5 text-[10px] text-paper/70 hover:bg-white/10">↑</button>
           <button onClick={() => handleZOrder("backward")} title="下移" className="rounded px-1.5 py-0.5 text-[10px] text-paper/70 hover:bg-white/10">↓</button>
@@ -551,18 +645,29 @@ export default function DebugOverlay({ containerRef, onExit }: DebugOverlayProps
         onDragOver={handleCanvasDragOver}
         onDrop={handleCanvasDrop}
       >
-        {sortedAssets.map((asset) => (
-          <DraggableAsset
-            key={asset.id}
-            asset={asset}
-            scale={scale}
-            refW={refW}
-            refH={refH}
-            isSelected={selectedId === asset.id}
-            onSelect={() => setSelectedId(asset.id)}
-            onChange={(changes) => updateAsset(asset.id, changes)}
-          />
-        ))}
+        {sortedAssets.map((asset) => {
+          // 古人访客：使用当前选中的古人专属图片和布局
+          const renderAsset = asset.id === "elem-ancient-guest" && ANCIENT_IMAGE_MAP[debugAncientId]
+            ? {
+                ...asset,
+                src: ANCIENT_IMAGE_MAP[debugAncientId],
+                name: `${ANCIENT_NAMES[debugAncientId]}坐像`,
+                ...(asset.ancientLayouts?.[debugAncientId] ?? {}),
+              }
+            : asset;
+          return (
+            <DraggableAsset
+              key={asset.id}
+              asset={renderAsset}
+              scale={scale}
+              refW={refW}
+              refH={refH}
+              isSelected={selectedId === asset.id}
+              onSelect={() => setSelectedId(asset.id)}
+              onChange={(changes) => updateAsset(asset.id, changes)}
+            />
+          );
+        })}
       </div>
 
       {/* ===== 图层面板 ===== */}

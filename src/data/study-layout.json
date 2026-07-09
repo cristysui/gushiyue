@@ -179,7 +179,29 @@
       "z": 6,
       "category": "character",
       "interaction": "ancient",
-      "locked": true
+      "locked": true,
+      "ancientLayouts": {
+        "liqingzhao": {
+          "x": 508,
+          "y": 2,
+          "w": 817
+        },
+        "baijuyi": {
+          "x": 508,
+          "y": 2,
+          "w": 817
+        },
+        "taoyuanming": {
+          "x": 508,
+          "y": 2,
+          "w": 817
+        },
+        "wangyangming": {
+          "x": 508,
+          "y": 2,
+          "w": 817
+        }
+      }
     },
     {
       "id": "elem-tabletop-empty",
@@ -306,7 +328,29 @@
         "z": 6,
         "category": "character",
         "interaction": "ancient",
-        "locked": false
+        "locked": false,
+        "ancientLayouts": {
+          "liqingzhao": {
+            "x": 122,
+            "y": 326,
+            "w": 905
+          },
+          "baijuyi": {
+            "x": 122,
+            "y": 326,
+            "w": 905
+          },
+          "taoyuanming": {
+            "x": 122,
+            "y": 326,
+            "w": 905
+          },
+          "wangyangming": {
+            "x": 122,
+            "y": 326,
+            "w": 905
+          }
+        }
       },
       {
         "id": "elem-visitor-plaque",
