@@ -1,5 +1,5 @@
 // 古时月 Service Worker - 离线缓存策略
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v4";
 const STATIC_CACHE = `gushiyue-static-${CACHE_VERSION}`;
 const IMG_CACHE = `gushiyue-img-${CACHE_VERSION}`;
 
