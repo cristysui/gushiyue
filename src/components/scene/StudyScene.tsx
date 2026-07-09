@@ -342,14 +342,14 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
 
           // 古人访客特殊处理（叠加名牌 + 交互标记）
           if (asset.id === "elem-ancient-guest") {
-            // 专属坐像图片需缩小20%并上移20%
+            // 专属坐像缩小20%并上移20%；默认full-body图下移20%
             const hasCustomImg = ancient && ANCIENT_IMAGE_MAP[ancient.id];
             const scale = hasCustomImg ? 0.8 : 1;
             const imgW = asset.w * scale;
             // 水平居中保持不变（偏移补偿缩小的宽度）
             const imgX = asset.x + (asset.w - imgW) / 2;
-            // 向上移动约20%（基于素材高度估算，用宽度近似）
-            const imgY = asset.y - asset.w * 0.2;
+            // 默认图下移约20%；专属坐像上移约20%
+            const imgY = hasCustomImg ? asset.y - asset.w * 0.2 : asset.y + asset.w * 0.24;
             return (
               <div
                 key={asset.id}
