@@ -322,32 +322,32 @@
         "id": "elem-ancient-guest",
         "src": "/assets/four-seasons-study-components/ancient-guest-scholar-full-body.webp",
         "name": "古人访客",
-        "x": 111,
-        "y": 366,
-        "w": 1006,
-        "z": 6,
+        "x": 221,
+        "y": 174,
+        "w": 905,
+        "z": 4,
         "category": "character",
         "interaction": "ancient",
         "locked": false,
         "ancientLayouts": {
           "liqingzhao": {
-            "x": 122,
-            "y": 326,
+            "x": 67,
+            "y": 209,
             "w": 905
           },
           "baijuyi": {
-            "x": 122,
-            "y": 326,
+            "x": 158,
+            "y": 187,
             "w": 905
           },
           "taoyuanming": {
-            "x": 122,
-            "y": 326,
+            "x": 199,
+            "y": 163,
             "w": 905
           },
           "wangyangming": {
-            "x": 122,
-            "y": 326,
+            "x": 221,
+            "y": 174,
             "w": 905
           }
         }
