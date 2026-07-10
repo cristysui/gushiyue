@@ -6,6 +6,7 @@ import type { TodayData } from "@/lib/types";
 interface FloatingHeaderProps {
   today: TodayData | null;
   onExpand?: () => void;
+  onNavClick?: (item: string) => void;
 }
 
 /**
@@ -15,7 +16,7 @@ interface FloatingHeaderProps {
  * Web 端：更丰富（五行 + 宜忌）
  * 点击展开详情弹窗
  */
-export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps) {
+export default function FloatingHeader({ today, onExpand, onNavClick }: FloatingHeaderProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -95,7 +96,11 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
           {!isMobile && (
             <nav className="flex items-center gap-4">
               {["书阁", "雅集", "笔记", "设置"].map((item) => (
-                <span key={item} className="text-nav text-sm cursor-pointer transition-opacity hover:opacity-100 opacity-80">
+                <span
+                  key={item}
+                  className="text-nav text-sm cursor-pointer transition-opacity hover:opacity-100 opacity-80"
+                  onClick={() => onNavClick?.(item)}
+                >
                   {item}
                 </span>
               ))}
@@ -106,6 +111,16 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
           <span className="cursor-pointer text-xs text-paper/40 transition-transform whitespace-nowrap" style={{ transform: expanded ? "rotate(180deg)" : "" }} onClick={handleClick}>
             ▾
           </span>
+
+          {/* 移动端菜单按钮 */}
+          {isMobile && (
+            <span
+              className="cursor-pointer text-base text-paper/60 hover:text-paper"
+              onClick={() => onNavClick?.("menu")}
+            >
+              ☰
+            </span>
+          )}
         </div>
       </div>
 

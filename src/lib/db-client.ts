@@ -37,6 +37,22 @@ export async function fetchChatHistory(
 }
 
 /**
+ * 查询当前用户的所有对话历史（用于笔记模块）
+ */
+export async function fetchAllChatHistory(
+  client: SupabaseClient
+): Promise<ChatHistoryRecord[]> {
+  const { data, error } = await client
+    .from('chat_history')
+    .select('*')
+    .order('created_at', { ascending: true })
+    .limit(1000)
+
+  if (error) return []
+  return (data || []) as ChatHistoryRecord[]
+}
+
+/**
  * 保存一条对话消息
  */
 export async function saveChatMessage(

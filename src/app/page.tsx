@@ -7,6 +7,8 @@ import AuthModal from "@/components/AuthModal";
 import ColorBadge from "@/components/ColorBadge";
 import TagList from "@/components/TagList";
 import FloatingHeader from "@/components/FloatingHeader";
+import BookPavilion from "@/components/BookPavilion";
+import JournalNotes from "@/components/JournalNotes";
 import StudyScene from "@/components/scene/StudyScene";
 import DebugOverlay from "@/components/scene/DebugOverlay";
 import { useAuth } from "@/lib/auth";
@@ -30,6 +32,9 @@ export default function HomePage() {
   const [authOpen, setAuthOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [debugMode, setDebugMode] = useState(false);
+  const [bookPavilionOpen, setBookPavilionOpen] = useState(false);
+  const [journalOpen, setJournalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sceneContainerRef = useRef<HTMLDivElement>(null);
 
   const { user, accessToken, signIn, signUp, signOut } = useAuth();
@@ -132,7 +137,54 @@ export default function HomePage() {
       )}
 
       {/* ===== 透明浮动 Header（非 Debug 时显示）===== */}
-      {!debugMode && <FloatingHeader today={today} />}
+      {!debugMode && (
+        <FloatingHeader
+          today={today}
+          onNavClick={(item) => {
+            if (item === "书阁") setBookPavilionOpen(true);
+            else if (item === "笔记") setJournalOpen(true);
+            else if (item === "menu") setMobileMenuOpen(true);
+          }}
+        />
+      )}
+
+      {/* ===== 移动端菜单弹窗 ===== */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ background: "rgba(28,25,23,0.9)", backdropFilter: "blur(8px)" }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <div className="flex flex-col items-center gap-6" onClick={(e) => e.stopPropagation()}>
+            {["书阁", "笔记"].map((item) => (
+              <button
+                key={item}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (item === "书阁") setBookPavilionOpen(true);
+                  else if (item === "笔记") setJournalOpen(true);
+                }}
+                className="title-serif text-2xl text-paper/80 transition hover:text-gold"
+                style={{ letterSpacing: "0.15em" }}
+              >
+                {item}
+              </button>
+            ))}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-4 text-sm text-paper/40"
+            >
+              ✕ 关闭
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== 书阁模块 ===== */}
+      <BookPavilion open={bookPavilionOpen} onClose={() => setBookPavilionOpen(false)} />
+
+      {/* ===== 笔记模块 ===== */}
+      <JournalNotes open={journalOpen} onClose={() => setJournalOpen(false)} accessToken={accessToken} />
 
       {/* ===== 右上角：用户区（非 Debug 时显示）===== */}
       {!debugMode && (
