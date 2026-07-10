@@ -7,7 +7,6 @@ import {
   getDayGanZhi,
   getColorHex,
   SHICHEN_NAMES,
-  fetchAiFortuneMessage,
   type DailyFortune as DailyFortuneData,
 } from "@/lib/fortune";
 
@@ -23,10 +22,9 @@ interface Birthdate {
 interface DailyFortuneProps {
   open: boolean;
   onClose: () => void;
-  accessToken?: string | null;
 }
 
-export default function DailyFortune({ open, onClose, accessToken }: DailyFortuneProps) {
+export default function DailyFortune({ open, onClose }: DailyFortuneProps) {
   const [birthdate, setBirthdate] = useState<Birthdate | null>(() => {
     if (typeof window === "undefined") return null;
     try {
@@ -39,8 +37,6 @@ export default function DailyFortune({ open, onClose, accessToken }: DailyFortun
     return null;
   });
   const [userEditing, setUserEditing] = useState(false);
-  const [aiMessage, setAiMessage] = useState<string | null>(null);
-  const [aiLoading, setAiLoading] = useState(false);
 
   const editing = !birthdate || userEditing;
 
@@ -51,20 +47,6 @@ export default function DailyFortune({ open, onClose, accessToken }: DailyFortun
         : null,
     [birthdate, userEditing],
   );
-
-  // AI 运势寄语：已登录且有生辰时调用
-  useEffect(() => {
-    if (!open || !birthdate || userEditing || !accessToken) {
-      setAiMessage(null);
-      setAiLoading(false);
-      return;
-    }
-    setAiLoading(true);
-    setAiMessage(null);
-    fetchAiFortuneMessage(birthdate.year, birthdate.month, birthdate.day, birthdate.hour, accessToken)
-      .then((msg) => { setAiMessage(msg); setAiLoading(false); })
-      .catch(() => { setAiMessage(null); setAiLoading(false); });
-  }, [open, birthdate, userEditing, accessToken]);
 
   const handleClose = useCallback(() => {
     setUserEditing(false);
@@ -119,7 +101,7 @@ export default function DailyFortune({ open, onClose, accessToken }: DailyFortun
               {editing || !fortune ? (
                 <BirthdateForm initialBirthdate={birthdate} onSaved={handleSaved} />
               ) : (
-                <FortuneSlip fortune={fortune} aiMessage={aiMessage} aiLoading={aiLoading} isLoggedIn={!!accessToken} />
+                <FortuneSlip fortune={fortune} />
               )}
             </div>
           </div>
@@ -217,9 +199,8 @@ function BirthdateForm({ initialBirthdate, onSaved }: BirthdateFormProps) {
 
 /* ===== 签纸运势 ===== */
 
-function FortuneSlip({ fortune, aiMessage, aiLoading, isLoggedIn }: { fortune: DailyFortuneData; aiMessage: string | null; aiLoading: boolean; isLoggedIn: boolean }) {
+function FortuneSlip({ fortune }: { fortune: DailyFortuneData }) {
   const ganZhi = useMemo(() => getDayGanZhi(new Date()), []);
-  const displayMessage = aiMessage || fortune.message;
 
   return (
     <div className="fortune-fade">
@@ -291,18 +272,7 @@ function FortuneSlip({ fortune, aiMessage, aiLoading, isLoggedIn }: { fortune: D
 
       {/* 寄语 */}
       <div className="my-3 text-center">
-        {aiLoading ? (
-          <p className="text-sm text-ink-light" style={{ animation: "fortuneGlow 1.5s ease-in-out infinite" }}>
-            天机推演中…
-          </p>
-        ) : (
-          <>
-            <p className="font-title text-lg leading-loose text-ink" style={{ letterSpacing: "0.08em", whiteSpace: "pre-line" }}>{displayMessage}</p>
-            {aiMessage && isLoggedIn && (
-              <p className="mt-2 text-[10px] text-gold" style={{ opacity: 0.6 }}>— 天机先生批</p>
-            )}
-          </>
-        )}
+        <p className="font-title text-lg leading-loose text-ink" style={{ letterSpacing: "0.08em", whiteSpace: "pre-line" }}>{fortune.message}</p>
       </div>
 
       {/* 朱印 */}

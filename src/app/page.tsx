@@ -256,7 +256,7 @@ export default function HomePage() {
       <JournalNotes open={journalOpen} onClose={() => setJournalOpen(false)} accessToken={accessToken} />
 
       {/* ===== 日签模块 ===== */}
-      <DailyFortune open={fortuneOpen} onClose={() => setFortuneOpen(false)} accessToken={accessToken} />
+      <DailyFortune open={fortuneOpen} onClose={() => setFortuneOpen(false)} />
 
       {/* ===== 右上角：用户区（非 Debug 时显示）===== */}
       {!debugMode && (
