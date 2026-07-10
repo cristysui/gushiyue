@@ -369,18 +369,27 @@ export function getZodiacFromBirthYear(year: number): string {
   return ZODIAC[idx];
 }
 
+/** 十二时辰名称 */
+export const SHICHEN_NAMES = [
+  "子时(23-1点)", "丑时(1-3点)", "寅时(3-5点)", "卯时(5-7点)",
+  "辰时(7-9点)", "巳时(9-11点)", "午时(11-13点)", "未时(13-15点)",
+  "申时(15-17点)", "酉时(17-19点)", "戌时(19-21点)", "亥时(21-23点)",
+];
+
 /**
  * 计算今日日签运势。
  *
  * @param birthYear  出生年份（公历）
  * @param birthMonth 出生月份（1-12）
  * @param birthDay   出生日（1-31）
+ * @param birthHour  出生时辰索引(0-11, 对应子-亥)，可选
  * @returns 今日运势数据（同日同人结果确定）
  */
 export function getDailyFortune(
   birthYear: number,
   birthMonth: number,
   birthDay: number,
+  birthHour?: number,
 ): DailyFortune {
   const now = new Date();
 
@@ -404,7 +413,8 @@ export function getDailyFortune(
     now.getDate() +
     birthYear * 31 +
     birthMonth * 53 +
-    birthDay * 71;
+    birthDay * 71 +
+    (birthHour !== undefined ? birthHour * 97 : 0);
   const rng = createRng(seed);
 
   // 幸运色：当日五行之色，取其二
@@ -441,4 +451,75 @@ export function getDailyFortune(
     message: FORTUNE_MESSAGES[rating],
     relationship: describeRelation(relation.type, userZodiac, dayZodiac),
   };
+}
+
+// ===== AI 运势接口（复用现有 Supabase edge function）=====
+
+/**
+ * 调用现有 ancient-chat edge function 生成 AI 运势寄语。
+ * 需要用户已登录（edge function 要求认证）。
+ * 失败时返回 null，调用方应回退到本地寄语。
+ *
+ * @param birthYear  出生年
+ * @param birthMonth 出生月
+ * @param birthDay   出生日
+ * @param birthHour  出生时辰索引(0-11)，可选
+ * @param accessToken Supabase access token
+ */
+export async function fetchAiFortuneMessage(
+  birthYear: number,
+  birthMonth: number,
+  birthDay: number,
+  birthHour: number | undefined,
+  accessToken: string,
+): Promise<string | null> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://pnbrlpsblvgkvbokvbkv.supabase.co";
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_liBkYUhKjK0tWqoq5R-ZoQ_f4eeX6bo";
+
+  const shichenStr = birthHour !== undefined ? SHICHEN_NAMES[birthHour] : "时辰不详";
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+  const zodiac = getZodiacFromBirthYear(birthYear);
+
+  const prompt = `请作为一位精通命理的先生，根据以下信息给出今日运势寄语（限80字以内，古风文言）：
+
+生辰：${birthYear}年${birthMonth}月${birthDay}日 ${shichenStr}
+生肖：${zodiac}
+今日：${todayStr}
+
+请给出今日的运势总评和一句古风寄语，语气典雅简练。`;
+
+  try {
+    const res = await fetch(`${supabaseUrl}/functions/v1/ancient-chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: anonKey,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        ancientId: "fortune",
+        message: prompt,
+        messages: [],
+        ancient: {
+          id: "fortune",
+          name: "天机先生",
+          dynasty: "宋",
+          title: "命理先生",
+          bio: "精通八字命理，善于推演每日运势",
+          personality: "神秘睿智",
+          speakingStyle: "古风文言",
+          famousWorks: [],
+          promptHint: "命理运势",
+        },
+      }),
+    });
+    const json = await res.json();
+    if (json.success && json.data?.reply) {
+      return json.data.reply as string;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
