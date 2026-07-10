@@ -295,35 +295,43 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
 
           // 背景类素材铺满画布（首屏 eager 加载）
           if (asset.category === "fixed") {
-            // 前景书案：铺满画布 + 拦截点击事件，防止后方古人被误触
+            // 前景书案：图片铺满 + 底部拦截点击防止误触古人
             if (asset.id === "layer-foreground-desk") {
               return (
-                <div
-                  key={asset.id}
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    width: `${refW}px`,
-                    height: `${refH}px`,
-                    zIndex: asset.z,
-                    pointerEvents: "auto",
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <>
+                  {/* 图片层：铺满画布，不拦截事件 */}
                   <SceneImage
+                    key={asset.id}
                     src={asset.src}
                     alt={asset.name}
                     eager
                     style={{
-                      width: "100%",
-                      height: "100%",
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      width: `${refW}px`,
+                      height: `${refH}px`,
                       objectFit: "cover",
+                      zIndex: asset.z,
                       opacity: asset.opacity ?? 1,
                       pointerEvents: "none",
                     }}
                   />
-                </div>
+                  {/* 点击拦截层：仅覆盖底部书案可见区域，防止误触后方古人 */}
+                  <div
+                    key={`${asset.id}-click`}
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      bottom: 0,
+                      width: `${refW}px`,
+                      height: `${refH * 0.35}px`,
+                      zIndex: asset.z,
+                      pointerEvents: "auto",
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </>
               );
             }
             // 窗外山水画背景：上移30%
@@ -379,72 +387,57 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
             const imgX = ancientOverride?.x ?? asset.x;
             const imgY = ancientOverride?.y ?? asset.y;
             return (
-              <>
-                {/* 原始图层：保持 z-index 不变（布局正确） */}
-                <div
-                  key={asset.id}
-                  style={{
-                    position: "absolute",
-                    left: `${imgX}px`,
-                    top: `${imgY}px`,
-                    width: `${imgW}px`,
-                    zIndex: asset.z,
-                    pointerEvents: "none",
-                  }}
-                >
-                  <SceneImage
-                    src={ancient && ANCIENT_IMAGE_MAP[ancient.id] ? ANCIENT_IMAGE_MAP[ancient.id] : asset.src}
-                    alt={ancient?.name ?? "古人"}
-                    style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
-                  />
-                  {/* 交互标记：纯视觉指示 */}
-                  {hasInteraction && (
-                    <div
-                      className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
-                      style={{ animation: "float-gentle 2s ease-in-out infinite" }}
-                    >
-                      <div
-                        className="flex items-center justify-center rounded-full text-[10px] font-bold text-white"
-                        style={{
-                          width: "22px",
-                          height: "22px",
-                          background: INTERACTION_COLORS[asset.interaction!],
-                          border: "2px solid rgba(253, 251, 246, 0.8)",
-                          boxShadow: `0 0 10px ${INTERACTION_COLORS[asset.interaction!]}66`,
-                          opacity: hoveredAsset === asset.id ? 1 : 0.7,
-                        }}
-                      >
-                        {INTERACTION_ICONS[asset.interaction!]}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {/* 不可见点击热区层：z-index 最高，覆盖古人图片区域接收点击 */}
+              <div
+                key={asset.id}
+                style={{
+                  position: "absolute",
+                  left: `${imgX}px`,
+                  top: `${imgY}px`,
+                  width: `${imgW}px`,
+                  zIndex: asset.z,
+                  pointerEvents: hasInteraction ? "auto" : "none",
+                  cursor: hasInteraction ? "pointer" : "default",
+                }}
+                onMouseEnter={hasInteraction ? () => {
+                  setHoveredAsset(asset.id);
+                  setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
+                } : undefined}
+                onMouseLeave={hasInteraction ? () => {
+                  setHoveredAsset(null);
+                  setTooltip(null);
+                } : undefined}
+                onClick={hasInteraction ? (e) => {
+                  e.stopPropagation();
+                  handleInteract(asset.interaction!);
+                } : undefined}
+              >
+                <SceneImage
+                  src={ancient && ANCIENT_IMAGE_MAP[ancient.id] ? ANCIENT_IMAGE_MAP[ancient.id] : asset.src}
+                  alt={ancient?.name ?? "古人"}
+                  style={{ width: "100%", height: "auto", objectFit: "contain", pointerEvents: "none" }}
+                />
+                {/* 交互标记：纯视觉指示 */}
                 {hasInteraction && (
                   <div
-                    key={`${asset.id}-click`}
-                    style={{
-                      position: "absolute",
-                      left: `${imgX}px`,
-                      top: `${imgY}px`,
-                      width: `${imgW}px`,
-                      height: `${imgW * 1.2}px`,
-                      zIndex: 999,
-                      cursor: "pointer",
-                      pointerEvents: "auto",
-                    }}
-                    onMouseEnter={() => {
-                      setHoveredAsset(asset.id);
-                      setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredAsset(null);
-                      setTooltip(null);
-                    }}
-                    onClick={() => handleInteract(asset.interaction!)}
-                  />
+                    className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
+                    style={{ animation: "float-gentle 2s ease-in-out infinite" }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-full text-[10px] font-bold text-white"
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        background: INTERACTION_COLORS[asset.interaction!],
+                        border: "2px solid rgba(253, 251, 246, 0.8)",
+                        boxShadow: `0 0 10px ${INTERACTION_COLORS[asset.interaction!]}66`,
+                        opacity: hoveredAsset === asset.id ? 1 : 0.7,
+                      }}
+                    >
+                      {INTERACTION_ICONS[asset.interaction!]}
+                    </div>
+                  </div>
                 )}
-              </>
+              </div>
             );
           }
 

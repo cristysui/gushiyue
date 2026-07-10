@@ -111,16 +111,6 @@ export default function FloatingHeader({ today, onExpand, onNavClick }: Floating
           <span className="cursor-pointer text-xs text-paper/40 transition-transform whitespace-nowrap" style={{ transform: expanded ? "rotate(180deg)" : "" }} onClick={handleClick}>
             ▾
           </span>
-
-          {/* 移动端菜单按钮 */}
-          {isMobile && (
-            <span
-              className="cursor-pointer text-base text-paper/60 hover:text-paper"
-              onClick={() => onNavClick?.("menu")}
-            >
-              ☰
-            </span>
-          )}
         </div>
       </div>
 

@@ -34,7 +34,6 @@ export default function HomePage() {
   const [debugMode, setDebugMode] = useState(false);
   const [bookPavilionOpen, setBookPavilionOpen] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sceneContainerRef = useRef<HTMLDivElement>(null);
 
   const { user, accessToken, signIn, signUp, signOut } = useAuth();
@@ -143,41 +142,47 @@ export default function HomePage() {
           onNavClick={(item) => {
             if (item === "书阁") setBookPavilionOpen(true);
             else if (item === "笔记") setJournalOpen(true);
-            else if (item === "menu") setMobileMenuOpen(true);
           }}
         />
       )}
 
-      {/* ===== 移动端菜单弹窗 ===== */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: "rgba(28,25,23,0.9)", backdropFilter: "blur(8px)" }}
-          onClick={() => setMobileMenuOpen(false)}
+      {/* ===== 移动端底部 Tab 栏 ===== */}
+      {!debugMode && (
+        <nav
+          className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around sm:hidden"
+          style={{
+            background: "rgba(28,25,23,0.92)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            borderTop: "1px solid rgba(184,134,11,0.2)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
         >
-          <div className="flex flex-col items-center gap-6" onClick={(e) => e.stopPropagation()}>
-            {["书阁", "笔记"].map((item) => (
-              <button
-                key={item}
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (item === "书阁") setBookPavilionOpen(true);
-                  else if (item === "笔记") setJournalOpen(true);
-                }}
-                className="title-serif text-2xl text-paper/80 transition hover:text-gold"
-                style={{ letterSpacing: "0.15em" }}
-              >
-                {item}
-              </button>
-            ))}
+          {[
+            { label: "书案", icon: "案", action: () => {} },
+            { label: "书阁", icon: "阁", action: () => setBookPavilionOpen(true) },
+            { label: "笔记", icon: "记", action: () => setJournalOpen(true) },
+          ].map((tab) => (
             <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="mt-4 text-sm text-paper/40"
+              key={tab.label}
+              onClick={tab.action}
+              className="flex flex-1 flex-col items-center gap-0.5 py-2.5 transition-colors"
+              style={{ color: "rgba(245,241,232,0.6)" }}
             >
-              ✕ 关闭
+              <span
+                className="title-serif flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                style={{
+                  border: "1px solid rgba(184,134,11,0.25)",
+                  background: "rgba(184,134,11,0.06)",
+                  color: "var(--color-gold)",
+                }}
+              >
+                {tab.icon}
+              </span>
+              <span className="title-serif text-[10px] tracking-wider">{tab.label}</span>
             </button>
-          </div>
-        </div>
+          ))}
+        </nav>
       )}
 
       {/* ===== 书阁模块 ===== */}
