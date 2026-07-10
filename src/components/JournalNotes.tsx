@@ -199,10 +199,10 @@ export default function JournalNotes({ open, onClose, accessToken }: JournalNote
 
       <div className="flex h-full w-full flex-col" onClick={(e) => e.stopPropagation()}>
         {/* 顶部标题栏 */}
-        <header className="flex shrink-0 items-center justify-between px-5 py-4 sm:px-8" style={{ borderBottom: "1px solid rgba(214,207,192,0.12)" }}>
+        <header className="flex shrink-0 items-center justify-between px-5 py-4 sm:px-8" style={{ borderBottom: "1px solid rgba(184,134,11,0.15)" }}>
           <div className="flex items-baseline gap-3">
-            <h2 className="title-serif text-2xl font-bold sm:text-3xl" style={{ color: "var(--color-paper)" }}>笔記</h2>
-            <span className="title-serif text-xs tracking-widest sm:text-sm" style={{ color: "var(--color-gold)" }}>古時月 · 與古人的每日對談</span>
+            <h2 className="title-serif text-2xl font-bold sm:text-3xl" style={{ color: "var(--color-gold)" }}>日記</h2>
+            <span className="title-serif text-xs tracking-widest sm:text-sm" style={{ color: "rgba(245,241,232,0.5)" }}>古時月 · 與古人的每日對談</span>
           </div>
           <button onClick={onClose} className="flex h-9 w-9 items-center justify-center rounded-full text-lg transition-colors hover:bg-white/5" style={{ color: "rgba(245,241,232,0.7)" }} aria-label="关闭">✕</button>
         </header>
@@ -210,8 +210,29 @@ export default function JournalNotes({ open, onClose, accessToken }: JournalNote
         {/* 主体内容 */}
         <main className="journal-scroll flex-1 overflow-y-auto px-4 py-5 sm:px-8">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 lg:flex-row lg:items-start">
-            {/* 日历卡片 */}
-            <section className="w-full shrink-0 rounded-2xl ink-shadow-deep lg:w-[400px]" style={{ background: "var(--color-paper)", border: "1px solid var(--color-border)" }}>
+            {/* 日历卡片 —— 宣纸卷面 */}
+            <section
+              className="w-full shrink-0 lg:w-[400px]"
+              style={{
+                background: `
+                  repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(139,105,20,0.035) 30px, rgba(139,105,20,0.035) 31px),
+                  linear-gradient(180deg, #f7f2e6 0%, #f0e9d6 100%)
+                `,
+                border: "1px solid rgba(184,134,11,0.3)",
+                borderRadius: "8px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.2), inset 0 0 50px rgba(139,105,20,0.04)",
+              }}
+            >
+              {/* 卷面顶部装饰条 */}
+              <div
+                className="flex items-center justify-center gap-3 py-2"
+                style={{ borderBottom: "1px solid rgba(184,134,11,0.15)" }}
+              >
+                <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(184,134,11,0.3))" }} />
+                <span className="title-serif text-[10px] tracking-[0.3em]" style={{ color: "var(--color-gold)", opacity: 0.6 }}>日历</span>
+                <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(184,134,11,0.3), transparent)" }} />
+              </div>
+
               {/* 日历头：导航 + 年月 + 展开/收起 */}
               <div className="flex items-center justify-between px-4 py-4">
                 {expanded ? (
@@ -247,35 +268,52 @@ export default function JournalNotes({ open, onClose, accessToken }: JournalNote
                 </button>
               </div>
 
-              {/* 星期表头 */}
-              <div className="grid grid-cols-7 px-2 pb-1">
-                {WEEKDAYS.map((w) => (
-                  <div key={w} className="title-serif py-1 text-center text-xs font-semibold" style={{ color: "var(--color-gold)" }}>{w}</div>
+              {/* 星期表头 —— 篆字风格 */}
+              <div className="grid grid-cols-7 px-2 pb-1" style={{ borderBottom: "1px solid rgba(184,134,11,0.1)" }}>
+                {WEEKDAYS.map((w, idx) => (
+                  <div key={w} className="title-serif py-1.5 text-center text-xs font-semibold" style={{
+                    color: idx === 0 || idx === 6 ? "var(--color-vermillion)" : "var(--color-gold)",
+                    opacity: 0.8,
+                  }}>{w}</div>
                 ))}
               </div>
 
               {/* ===== 周视图（默认） ===== */}
               {!expanded && (
-                <div key={`week-${weekOffset}`} className="journal-grid-anim grid grid-cols-7 gap-1 px-2 pb-3">
+                <div key={`week-${weekOffset}`} className="journal-grid-anim grid grid-cols-7 gap-1 px-2 pb-3 pt-1">
                   {weekDates.map((d) => {
                     const key = toDateKey(d);
                     const dayMessages = recordsByDate[key];
                     const hasConv = !!dayMessages;
                     const isSel = selectedDate === key;
                     const isToday = key === todayKey;
+                    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
                     return (
                       <button
                         key={key}
                         onClick={() => setSelectedDate(key)}
-                        className="relative flex aspect-square cursor-pointer flex-col items-center justify-center rounded-lg transition-all"
+                        className="relative flex aspect-square cursor-pointer flex-col items-center justify-center transition-all"
                         style={{
-                          border: isSel ? "2px solid var(--color-gold)" : "2px solid transparent",
-                          background: isSel ? "rgba(184,134,11,0.08)" : "transparent",
+                          borderRadius: "6px",
+                          border: isSel ? "1.5px solid var(--color-gold)" : "1px solid transparent",
+                          background: isSel
+                            ? "linear-gradient(180deg, rgba(184,134,11,0.12) 0%, rgba(184,134,11,0.06) 100%)"
+                            : isToday
+                              ? "rgba(196,69,54,0.05)"
+                              : "transparent",
+                          boxShadow: isSel ? "0 2px 8px rgba(184,134,11,0.15)" : "none",
                         }}
                         title={hasConv ? `${dayMessages!.length} 条对话` : undefined}
                       >
-                        <span className="title-serif text-sm leading-none sm:text-base" style={{ color: isToday ? "var(--color-vermillion)" : "var(--color-ink)", fontWeight: isToday ? 700 : 400 }}>{d.getDate()}</span>
-                        {hasConv && <span className="mt-1 h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-gold)" }} />}
+                        {isToday && !isSel && (
+                          <span className="absolute inset-0 rounded-md" style={{ border: "1px dashed rgba(196,69,54,0.4)" }} />
+                        )}
+                        <span className="title-serif text-sm leading-none sm:text-base" style={{
+                          color: isToday ? "var(--color-vermillion)" : isWeekend ? "var(--color-vermillion)" : "var(--color-ink)",
+                          fontWeight: isToday ? 700 : 400,
+                          opacity: isWeekend && !isToday ? 0.7 : 1,
+                        }}>{d.getDate()}</span>
+                        {hasConv && <span className="mt-1 h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-gold)", boxShadow: "0 0 4px rgba(184,134,11,0.4)" }} />}
                       </button>
                     );
                   })}
@@ -284,7 +322,7 @@ export default function JournalNotes({ open, onClose, accessToken }: JournalNote
 
               {/* ===== 月视图（展开后） ===== */}
               {expanded && (
-                <div key={`${viewYear}-${viewMonth}`} className="journal-grid-anim journal-expand-anim grid grid-cols-7 gap-1 px-2 pb-3">
+                <div key={`${viewYear}-${viewMonth}`} className="journal-grid-anim journal-expand-anim grid grid-cols-7 gap-1 px-2 pb-3 pt-1">
                   {cells.map((d, i) => {
                     if (d === null) return <div key={`blank-${i}`} className="aspect-square" />;
                     const key = monthDateKey(d);
@@ -292,19 +330,34 @@ export default function JournalNotes({ open, onClose, accessToken }: JournalNote
                     const hasConv = !!dayMessages;
                     const isSel = selectedDate === key;
                     const isToday = key === todayKey;
+                    const dow = new Date(viewYear, viewMonth, d).getDay();
+                    const isWeekend = dow === 0 || dow === 6;
                     return (
                       <button
                         key={key}
                         onClick={() => setSelectedDate(key)}
-                        className="relative flex aspect-square cursor-pointer flex-col items-center justify-center rounded-lg transition-all"
+                        className="relative flex aspect-square cursor-pointer flex-col items-center justify-center transition-all"
                         style={{
-                          border: isSel ? "2px solid var(--color-gold)" : "2px solid transparent",
-                          background: isSel ? "rgba(184,134,11,0.08)" : "transparent",
+                          borderRadius: "6px",
+                          border: isSel ? "1.5px solid var(--color-gold)" : "1px solid transparent",
+                          background: isSel
+                            ? "linear-gradient(180deg, rgba(184,134,11,0.12) 0%, rgba(184,134,11,0.06) 100%)"
+                            : isToday
+                              ? "rgba(196,69,54,0.05)"
+                              : "transparent",
+                          boxShadow: isSel ? "0 2px 8px rgba(184,134,11,0.15)" : "none",
                         }}
                         title={hasConv ? `${dayMessages!.length} 条对话` : undefined}
                       >
-                        <span className="title-serif text-sm leading-none sm:text-base" style={{ color: isToday ? "var(--color-vermillion)" : "var(--color-ink)", fontWeight: isToday ? 700 : 400 }}>{d}</span>
-                        {hasConv && <span className="mt-1 h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-gold)" }} />}
+                        {isToday && !isSel && (
+                          <span className="absolute inset-0 rounded-md" style={{ border: "1px dashed rgba(196,69,54,0.4)" }} />
+                        )}
+                        <span className="title-serif text-sm leading-none sm:text-base" style={{
+                          color: isToday ? "var(--color-vermillion)" : isWeekend ? "var(--color-vermillion)" : "var(--color-ink)",
+                          fontWeight: isToday ? 700 : 400,
+                          opacity: isWeekend && !isToday ? 0.7 : 1,
+                        }}>{d}</span>
+                        {hasConv && <span className="mt-1 h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-gold)", boxShadow: "0 0 4px rgba(184,134,11,0.4)" }} />}
                       </button>
                     );
                   })}
@@ -312,10 +365,22 @@ export default function JournalNotes({ open, onClose, accessToken }: JournalNote
               )}
 
               {/* 图例 */}
-              <div className="flex items-center justify-center gap-4 px-4 py-3 text-[11px]" style={{ borderTop: "1px solid var(--color-border)", color: "var(--color-muted)" }}>
-                <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-gold)" }} />有对话</span>
-                <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-sm" style={{ border: "2px solid var(--color-gold)" }} />已选</span>
-                <span style={{ color: "var(--color-vermillion)" }}>● 今日</span>
+              <div
+                className="flex items-center justify-center gap-5 px-4 py-3 text-[11px]"
+                style={{ borderTop: "1px solid rgba(184,134,11,0.12)", color: "var(--color-ink-light)" }}
+              >
+                <span className="flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-gold)", boxShadow: "0 0 4px rgba(184,134,11,0.4)" }} />
+                  <span className="title-serif">有墨</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-sm" style={{ border: "1.5px solid var(--color-gold)", background: "rgba(184,134,11,0.08)" }} />
+                  <span className="title-serif">已选</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-sm" style={{ border: "1px dashed rgba(196,69,54,0.5)" }} />
+                  <span className="title-serif" style={{ color: "var(--color-vermillion)" }}>今日</span>
+                </span>
               </div>
             </section>
 

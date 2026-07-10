@@ -161,36 +161,80 @@ export default function BookPavilion({ open, onClose }: BookPavilionProps) {
                 <span>返回{activeCat?.name}</span>
               </button>
 
+              {/* 宣纸卷轴 */}
               <div
-                className="rounded-lg px-8 py-12 text-center sm:px-12 sm:py-14"
-                style={{
-                  background: "linear-gradient(180deg, #f5f1e8 0%, #efe8d8 100%)",
-                  backgroundImage: `
-                    linear-gradient(180deg, rgba(245,241,232,1) 0%, rgba(239,232,216,1) 100%),
-                    repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(139,105,20,0.035) 32px, rgba(139,105,20,0.035) 33px)
-                  `,
-                  boxShadow: "0 8px 40px rgba(0,0,0,0.4), inset 0 0 60px rgba(139,105,20,0.06)",
-                  border: "1px solid rgba(184,134,11,0.25)",
-                }}
+                className="relative mx-auto max-w-2xl"
+                style={{ filter: "drop-shadow(0 6px 30px rgba(0,0,0,0.3))" }}
               >
-                <h3 className="title-serif text-2xl font-bold tracking-widest sm:text-3xl" style={{ color: "var(--color-ink)" }}>
-                  {selectedPoem.title}
-                </h3>
-                <div className="mt-3 flex items-center justify-center gap-2 text-sm" style={{ color: "var(--color-muted)" }}>
-                  <span style={{ color: "var(--color-vermillion)" }}>〔{selectedPoem.dynasty}〕</span>
-                  <span className="title-serif" style={{ color: "var(--color-ink-light)" }}>{selectedPoem.author}</span>
-                </div>
-                <div className="mx-auto my-7 flex items-center justify-center gap-3">
-                  <span className="h-px w-16" style={{ background: "var(--color-gold)", opacity: 0.35 }} />
-                  <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>❖</span>
-                  <span className="h-px w-16" style={{ background: "var(--color-gold)", opacity: 0.35 }} />
-                </div>
-                <p
-                  className="title-serif mx-auto text-lg leading-loose sm:text-xl"
-                  style={{ color: "var(--color-ink)", whiteSpace: "pre-line", letterSpacing: "0.08em", maxWidth: "460px" }}
+                {/* 卷轴顶部滚轴 */}
+                <div
+                  className="flex h-7 items-center justify-center rounded-t-md"
+                  style={{
+                    background: "linear-gradient(180deg, #5c3d1e 0%, #3d2812 100%)",
+                    boxShadow: "inset 0 1px 2px rgba(255,200,100,0.15)",
+                    border: "1px solid rgba(184,134,11,0.3)",
+                    borderBottom: "none",
+                  }}
                 >
-                  {selectedPoem.content}
-                </p>
+                  <div className="h-1.5 w-16 rounded-full" style={{ background: "rgba(184,134,11,0.4)" }} />
+                </div>
+
+                {/* 卷轴正文 */}
+                <div
+                  className="px-8 py-12 text-center sm:px-12 sm:py-14"
+                  style={{
+                    background: `
+                      repeating-linear-gradient(0deg, transparent, transparent 34px, rgba(139,105,20,0.04) 34px, rgba(139,105,20,0.04) 35px),
+                      linear-gradient(180deg, #f7f2e6 0%, #f0e9d6 100%)
+                    `,
+                    borderLeft: "1px solid rgba(184,134,11,0.25)",
+                    borderRight: "1px solid rgba(184,134,11,0.25)",
+                    boxShadow: "inset 0 0 80px rgba(139,105,20,0.05)",
+                  }}
+                >
+                  {/* 朱印标题装饰 */}
+                  <div className="mb-2 flex justify-center">
+                    <span
+                      className="title-serif rounded text-[10px] font-bold tracking-widest"
+                      style={{ padding: "2px 8px", background: "var(--color-vermillion)", color: "#fdfbf6", opacity: 0.85 }}
+                    >
+                      {selectedPoem.dynasty}
+                    </span>
+                  </div>
+
+                  <h3 className="title-serif text-2xl font-bold tracking-[0.15em] sm:text-3xl" style={{ color: "var(--color-ink)" }}>
+                    {selectedPoem.title}
+                  </h3>
+                  <p className="mt-2 title-serif text-sm" style={{ color: "var(--color-ink-light)" }}>
+                    {selectedPoem.author}
+                  </p>
+
+                  <div className="mx-auto my-7 flex items-center justify-center gap-3">
+                    <span className="h-px w-12" style={{ background: "var(--color-gold)", opacity: 0.3 }} />
+                    <span className="text-[10px]" style={{ color: "var(--color-gold)", opacity: 0.5 }}>❖</span>
+                    <span className="h-px w-12" style={{ background: "var(--color-gold)", opacity: 0.3 }} />
+                  </div>
+
+                  <p
+                    className="title-serif mx-auto text-lg leading-loose sm:text-xl"
+                    style={{ color: "var(--color-ink)", whiteSpace: "pre-line", letterSpacing: "0.1em", maxWidth: "440px", lineHeight: 2.4 }}
+                  >
+                    {selectedPoem.content}
+                  </p>
+                </div>
+
+                {/* 卷轴底部滚轴 */}
+                <div
+                  className="flex h-7 items-center justify-center rounded-b-md"
+                  style={{
+                    background: "linear-gradient(180deg, #3d2812 0%, #5c3d1e 100%)",
+                    boxShadow: "inset 0 -1px 2px rgba(255,200,100,0.15)",
+                    border: "1px solid rgba(184,134,11,0.3)",
+                    borderTop: "none",
+                  }}
+                >
+                  <div className="h-1.5 w-16 rounded-full" style={{ background: "rgba(184,134,11,0.4)" }} />
+                </div>
               </div>
 
               {selectedPoem.appreciation && (
@@ -218,35 +262,55 @@ export default function BookPavilion({ open, onClose }: BookPavilionProps) {
                 <span className="mt-4 block h-px w-full" style={{ background: "linear-gradient(90deg, var(--color-gold) 0%, transparent 100%)", opacity: 0.4 }} />
               </div>
 
-              <div className="space-y-4 pb-12">
+              <div className="space-y-3 pb-12">
                 {filteredPoems.map((poem, idx) => (
                   <button
                     key={poem.id}
                     onClick={() => setSelectedPoem(poem)}
-                    className="bp-card-in group block w-full rounded-lg px-5 py-5 text-left transition-all duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-6"
-                    style={{
-                      background: "var(--color-paper)",
-                      backgroundImage: "linear-gradient(135deg, rgba(245,241,232,0.6) 0%, transparent 100%)",
-                      border: "1px solid var(--color-border)",
-                      boxShadow: "0 2px 12px rgba(0,0,0,0.18)",
-                      animationDelay: `${idx * 0.05}s`,
-                    }}
+                    className="bp-card-in group block w-full text-left transition-all duration-300 hover:-translate-y-0.5"
+                    style={{ animationDelay: `${idx * 0.04}s` }}
                   >
-                    <div className="flex items-baseline justify-between gap-4">
-                      <h4 className="title-serif text-lg font-bold tracking-wider transition-colors duration-300 sm:text-xl" style={{ color: "var(--color-ink)" }}>
-                        {poem.title}
-                      </h4>
-                      <span className="shrink-0 text-xs" style={{ color: "var(--color-vermillion)" }}>
-                        〔{poem.dynasty}〕{poem.author}
-                      </span>
-                    </div>
-                    <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-ink-light)", letterSpacing: "0.05em" }}>
-                      {previewLine(poem.content)}
-                      {poem.content.includes("\n") && " …"}
-                    </p>
-                    <div className="mt-3 flex items-center gap-1 text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={{ color: "var(--color-gold)" }}>
-                      <span>展卷阅读</span>
-                      <span>→</span>
+                    {/* 竹简风格卡片 */}
+                    <div
+                      className="flex items-stretch overflow-hidden rounded-sm"
+                      style={{
+                        background: "linear-gradient(180deg, #f5f1e8 0%, #ede5d3 100%)",
+                        border: "1px solid rgba(184,134,11,0.2)",
+                        boxShadow: "0 2px 10px rgba(0,0,0,0.15), inset 0 0 30px rgba(139,105,20,0.04)",
+                      }}
+                    >
+                      {/* 左侧朱色书签条 */}
+                      <div
+                        className="flex shrink-0 flex-col items-center justify-center px-3 py-4"
+                        style={{
+                          background: "linear-gradient(180deg, rgba(196,69,54,0.85) 0%, rgba(180,55,45,0.9) 100%)",
+                          minWidth: "44px",
+                        }}
+                      >
+                        <span className="title-serif text-xs font-bold text-white/90" style={{ writingMode: "vertical-rl", letterSpacing: "0.2em" }}>
+                          {poem.dynasty}
+                        </span>
+                      </div>
+
+                      {/* 右侧内容 */}
+                      <div className="flex-1 px-5 py-4">
+                        <div className="flex items-baseline justify-between gap-3">
+                          <h4 className="title-serif text-lg font-bold tracking-wider transition-colors duration-300 sm:text-xl" style={{ color: "var(--color-ink)" }}>
+                            {poem.title}
+                          </h4>
+                          <span className="shrink-0 text-xs title-serif" style={{ color: "var(--color-ink-light)" }}>
+                            {poem.author}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-ink-light)", letterSpacing: "0.06em", opacity: 0.8 }}>
+                          {previewLine(poem.content)}
+                          {poem.content.includes("\n") && " …"}
+                        </p>
+                        <div className="mt-2 flex items-center gap-1 text-[11px] opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={{ color: "var(--color-gold)" }}>
+                          <span>展卷阅读</span>
+                          <span>→</span>
+                        </div>
+                      </div>
                     </div>
                   </button>
                 ))}
