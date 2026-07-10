@@ -54,55 +54,56 @@ export default function FloatingHeader({ today, onExpand }: FloatingHeaderProps)
         }}
       >
         <div className={`flex items-center gap-3 px-4 ${isMobile ? "py-2" : "py-2.5"}`}>
-          {/* 左侧：标题 + 核心历法信息 */}
-          <span className="font-title text-lg text-paper sm:text-xl" style={{ letterSpacing: "0.05em" }}>
+          {/* 左侧：标题 */}
+          <span className="font-title text-lg text-paper sm:text-xl whitespace-nowrap" style={{ letterSpacing: "0.05em" }}>
             古时月
           </span>
 
-          <span className="text-paper/20">|</span>
+          {/* 分隔符 + 核心历法信息（仅非移动端） */}
+          {!isMobile && (
+            <>
+              <span className="text-paper/20">|</span>
 
-          <div className="flex items-baseline gap-2 cursor-pointer" onClick={handleClick}>
-            <span className="title-serif text-sm font-bold text-paper sm:text-base">
-              {today.lunarDate}
-            </span>
-            {!isMobile && (
-              <span className="text-xs text-paper/60">{today.date}</span>
-            )}
-          </div>
+              <div className="flex items-baseline gap-2 cursor-pointer" onClick={handleClick}>
+                <span className="title-serif text-sm font-bold text-paper sm:text-base">
+                  {today.lunarDate}
+                </span>
+                <span className="text-xs text-paper/60">{today.date}</span>
+              </div>
 
-          {/* 分隔点 */}
-          <span className="text-paper/30">·</span>
+              <span className="text-paper/30">·</span>
 
-          {/* 节气 */}
-          <span className="cursor-pointer rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-xs text-gold" onClick={handleClick}>
-            {today.jieqi}
-          </span>
+              <span className="cursor-pointer rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-xs text-gold" onClick={handleClick}>
+                {today.jieqi}
+              </span>
 
-          {/* 五行（仅 Web 端） */}
-          {!isMobile && today.wuxing && (
-            <span className="text-xs text-paper/50">
-              {today.wuxing}日
-            </span>
+              {today.wuxing && (
+                <span className="text-xs text-paper/50">
+                  {today.wuxing}日
+                </span>
+              )}
+
+              <span className="rounded-full border border-jade/30 bg-jade/10 px-2 py-0.5 text-xs text-jade">
+                {today.currentShichen?.name}
+              </span>
+            </>
           )}
-
-          {/* 时辰 */}
-          <span className="rounded-full border border-jade/30 bg-jade/10 px-2 py-0.5 text-xs text-jade">
-            {today.currentShichen?.name}
-          </span>
 
           <div className="flex-1" />
 
-          {/* 顶部导航 */}
-          <nav className={`flex items-center gap-4 ${isMobile ? "hidden" : "flex"}`}>
-            {["书阁", "雅集", "笔记", "设置"].map((item) => (
-              <span key={item} className="text-nav text-sm cursor-pointer transition-opacity hover:opacity-100 opacity-80">
-                {item}
-              </span>
-            ))}
-          </nav>
+          {/* 顶部导航（仅非移动端） */}
+          {!isMobile && (
+            <nav className="flex items-center gap-4">
+              {["书阁", "雅集", "笔记", "设置"].map((item) => (
+                <span key={item} className="text-nav text-sm cursor-pointer transition-opacity hover:opacity-100 opacity-80">
+                  {item}
+                </span>
+              ))}
+            </nav>
+          )}
 
           {/* 展开按钮 */}
-          <span className="cursor-pointer text-xs text-paper/40 transition-transform" style={{ transform: expanded ? "rotate(180deg)" : "" }} onClick={handleClick}>
+          <span className="cursor-pointer text-xs text-paper/40 transition-transform whitespace-nowrap" style={{ transform: expanded ? "rotate(180deg)" : "" }} onClick={handleClick}>
             ▾
           </span>
         </div>
