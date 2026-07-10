@@ -206,9 +206,11 @@ interface StudySceneProps {
   debugMode?: boolean;
   /** 今日数据，用于万年历牌文字 */
   today?: { lunarDate: string; lunarDateShort: string; date: string; weekday: string; jieqi: string; isJieqiDay: boolean; wuxing: string } | null;
+  /** 点击名牌切换古人 */
+  onSwitchAncient?: () => void;
 }
 
-export default function StudyScene({ ancient, onInteract, containerRef, debugMode = false, today = null }: StudySceneProps) {
+export default function StudyScene({ ancient, onInteract, containerRef, debugMode = false, today = null, onSwitchAncient }: StudySceneProps) {
   const weather = getSeasonWeather();
   const [hoveredAsset, setHoveredAsset] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
@@ -441,7 +443,7 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
             );
           }
 
-          // 访客名牌：作为独立素材渲染，叠加古人名字
+          // 访客名牌：点击切换古人
           if (asset.id === "elem-visitor-plaque") {
             return (
               <div
@@ -453,18 +455,21 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                   width: `${asset.w}px`,
                   zIndex: asset.z,
                   opacity: asset.opacity ?? 1,
-                  pointerEvents: hasInteraction ? "auto" : "none",
-                  cursor: hasInteraction ? "pointer" : "default",
+                  pointerEvents: onSwitchAncient ? "auto" : "none",
+                  cursor: onSwitchAncient ? "pointer" : "default",
                 }}
-                onMouseEnter={hasInteraction ? () => {
+                onMouseEnter={onSwitchAncient ? () => {
                   setHoveredAsset(asset.id);
-                  setTooltip({ x: 0, y: 0, text: INTERACTION_LABELS[asset.interaction!] });
+                  setTooltip({ x: 0, y: 0, text: "换一位古人" });
                 } : undefined}
-                onMouseLeave={hasInteraction ? () => {
+                onMouseLeave={onSwitchAncient ? () => {
                   setHoveredAsset(null);
                   setTooltip(null);
                 } : undefined}
-                onClick={hasInteraction ? () => handleInteract(asset.interaction!) : undefined}
+                onClick={onSwitchAncient ? (e) => {
+                  e.stopPropagation();
+                  onSwitchAncient();
+                } : undefined}
               >
                 <SceneImage
                   src={asset.src}
@@ -479,8 +484,8 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                     {ancient.name}
                   </span>
                 )}
-                {/* 交互标记：纯视觉指示 */}
-                {hasInteraction && (
+                {/* 换人提示标记 */}
+                {onSwitchAncient && (
                   <div
                     className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2"
                     style={{ animation: "float-gentle 2s ease-in-out infinite" }}
@@ -490,13 +495,13 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                       style={{
                         width: "22px",
                         height: "22px",
-                        background: INTERACTION_COLORS[asset.interaction!],
+                        background: "var(--color-gold)",
                         border: "2px solid rgba(253, 251, 246, 0.8)",
-                        boxShadow: `0 0 10px ${INTERACTION_COLORS[asset.interaction!]}66`,
+                        boxShadow: "0 0 10px rgba(184,134,11,0.4)",
                         opacity: hoveredAsset === asset.id ? 1 : 0.7,
                       }}
                     >
-                      {INTERACTION_ICONS[asset.interaction!]}
+                      ↻
                     </div>
                   </div>
                 )}

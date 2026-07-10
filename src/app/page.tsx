@@ -119,7 +119,7 @@ export default function HomePage() {
     <div className="fixed inset-0 overflow-hidden">
       {/* ===== 场景 ===== */}
       <div ref={sceneContainerRef} className="absolute inset-0">
-        <StudyScene ancient={ancient} onInteract={handleSceneInteract} containerRef={sceneContainerRef} debugMode={debugMode} today={today} />
+        <StudyScene ancient={ancient} onInteract={handleSceneInteract} containerRef={sceneContainerRef} debugMode={debugMode} today={today} onSwitchAncient={handleReplaceAncient} />
       </div>
 
       {/* ===== Debug 拖拽层 ===== */}
@@ -219,22 +219,6 @@ export default function HomePage() {
             </button>
           )}
         </div>
-      )}
-
-      {/* ===== 右下角：换古人按钮（非 Debug 时显示）===== */}
-      {!debugMode && ancient && !chatOpen && (
-        <button
-          onClick={handleReplaceAncient}
-          className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-paper transition-all hover:scale-105"
-          style={{
-            background: "rgba(28, 25, 23, 0.6)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(196, 166, 122, 0.2)",
-          }}
-        >
-          <span className="title-serif">换一位古人</span>
-          <span className="text-paper/40">→</span>
-        </button>
       )}
 
       {/* ===== 左下角：Debug 按钮（仅开发环境显示）===== */}
