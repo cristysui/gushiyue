@@ -79,7 +79,7 @@
       "w": 405,
       "z": 11,
       "category": "decoration",
-      "interaction": null
+      "interaction": "clothing"
     },
     {
       "id": "elem-produce-basket",
@@ -405,7 +405,7 @@
         "w": 428,
         "z": 11,
         "category": "decoration",
-        "interaction": null
+        "interaction": "clothing"
       },
       {
         "id": "elem-produce-basket",

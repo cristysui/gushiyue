@@ -5,7 +5,7 @@ import studyLayoutData from "@/data/study-layout.json";
 import { useSceneScale } from "./useSceneScale";
 
 // ===== 类型 =====
-type HotspotType = "ancient" | "poetry" | "jieqi" | "calendar" | "flowers" | "shichen" | "garden";
+type HotspotType = "ancient" | "poetry" | "jieqi" | "calendar" | "flowers" | "shichen" | "garden" | "clothing";
 
 interface AncientLayoutOverride {
   x: number;
@@ -55,7 +55,7 @@ const fileLayout = studyLayoutData as StudyLayout;
 
 // ===== localStorage 读取（覆盖文件配置）=====
 // localStorage 布局版本号：每次更新布局文件后递增，使旧缓存自动失效
-const LAYOUT_VERSION = 5;
+const LAYOUT_VERSION = 6;
 
 function loadLocalLayout(isPortrait: boolean): LayoutAsset[] | null {
   if (typeof window === "undefined") return null;
@@ -174,6 +174,7 @@ const INTERACTION_COLORS: Record<string, string> = {
   flowers: "#d4829b",
   shichen: "#5f7a8b",
   garden: "#7a8c5a",
+  clothing: "#9c6b3c",
 };
 
 const INTERACTION_LABELS: Record<string, string> = {
@@ -184,6 +185,7 @@ const INTERACTION_LABELS: Record<string, string> = {
   flowers: "花信",
   shichen: "时辰",
   garden: "时令",
+  clothing: "五行穿衣",
 };
 
 const INTERACTION_ICONS: Record<string, string> = {
@@ -194,6 +196,7 @@ const INTERACTION_ICONS: Record<string, string> = {
   flowers: "花",
   shichen: "时",
   garden: "食",
+  clothing: "衣",
 };
 
 // ===== 主组件 =====

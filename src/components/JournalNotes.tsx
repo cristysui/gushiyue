@@ -72,7 +72,7 @@ export default function JournalNotes({ open, onClose, accessToken }: JournalNote
       setViewMonth(today.getMonth());
       setWeekOffset(0);
       setExpanded(false);
-      setSelectedDate(null);
+      setSelectedDate(toDateKey(today));
       setInitialLoaded(false);
     }
   }
