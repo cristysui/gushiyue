@@ -341,7 +341,7 @@ export default function StudyScene({ ancient, onInteract, containerRef, debugMod
                     width: `${refW}px`,
                     height: `${refH}px`,
                     objectFit: "cover",
-                    objectPosition: "center 30%",
+                    objectPosition: "center 10%",
                     zIndex: asset.z,
                     opacity: asset.opacity ?? 1,
                     pointerEvents: "none",
