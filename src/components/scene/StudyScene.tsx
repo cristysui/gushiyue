@@ -55,7 +55,7 @@ const fileLayout = studyLayoutData as StudyLayout;
 
 // ===== localStorage 读取（覆盖文件配置）=====
 // localStorage 布局版本号：每次更新布局文件后递增，使旧缓存自动失效
-const LAYOUT_VERSION = 4;
+const LAYOUT_VERSION = 5;
 
 function loadLocalLayout(isPortrait: boolean): LayoutAsset[] | null {
   if (typeof window === "undefined") return null;
