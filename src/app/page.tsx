@@ -27,9 +27,9 @@ type ModalType = "calendar" | "jieqi" | "poem" | "garden" | "flowers" | "shichen
 
 // ===== 五行穿衣配色数据 =====
 // 五行穿衣规则:
-//   大吉色 = 生我者(当日五行之母色, 如金日→土色, 土生金)
-//   次吉色 = 比和(当日五行同类色, 如金日→金色)
-//   不宜色 = 我生者(当日五行所生之色, 泄气, 如金日→水色, 金生水)
+//   大吉色 = 我生者(当日五行所生之色, 能量自然流向, 如火日→土色, 火生土)
+//   次吉色 = 比和(当日五行同类色, 如火日→火色)
+//   不宜色 = 生我者(生当日之色, 泄气, 如火日→木色, 木生火)
 interface ClothingColor { name: string; hex: string; }
 interface WuxingClothingData {
   color: string; bg: string; desc: string;
@@ -38,48 +38,48 @@ interface WuxingClothingData {
 const WUXING_CLOTHING_DATA: Record<string, WuxingClothingData> = {
   "金": {
     color: "#c0a062", bg: "rgba(192,160,98,0.1)", desc: "金日主收敛肃杀",
-    // 大吉: 土生金 → 土色
-    lucky: [{ name: "黄色", hex: "#e6c84c" }, { name: "棕色", hex: "#8b6914" }, { name: "褐色", hex: "#6b4226" }],
+    // 大吉: 金生水 → 水色
+    lucky: [{ name: "黑色", hex: "#2c3e50" }, { name: "蓝色", hex: "#3498db" }, { name: "玄色", hex: "#1a1a2e" }],
     // 次吉: 比和 → 金色
     secondary: [{ name: "白色", hex: "#ffffff" }, { name: "银色", hex: "#c0c0c0" }, { name: "金色", hex: "#d4af37" }],
-    // 不宜: 金生水 → 水色(泄气)
-    unlucky: [{ name: "黑色", hex: "#2c3e50" }, { name: "蓝色", hex: "#3498db" }, { name: "玄色", hex: "#1a1a2e" }],
+    // 不宜: 土生金 → 土色(泄气)
+    unlucky: [{ name: "黄色", hex: "#e6c84c" }, { name: "棕色", hex: "#8b6914" }, { name: "褐色", hex: "#6b4226" }],
   },
   "木": {
     color: "#4a8b4a", bg: "rgba(74,139,74,0.1)", desc: "木日主生发条达",
-    // 大吉: 水生木 → 水色
-    lucky: [{ name: "黑色", hex: "#2c3e50" }, { name: "蓝色", hex: "#3498db" }, { name: "玄色", hex: "#1a1a2e" }],
+    // 大吉: 木生火 → 火色
+    lucky: [{ name: "红色", hex: "#e74c3c" }, { name: "紫色", hex: "#8e44ad" }, { name: "朱色", hex: "#c0392b" }],
     // 次吉: 比和 → 木色
     secondary: [{ name: "青色", hex: "#2ecc8f" }, { name: "绿色", hex: "#27ae60" }, { name: "翠色", hex: "#16a085" }],
-    // 不宜: 木生火 → 火色(泄气)
-    unlucky: [{ name: "红色", hex: "#e74c3c" }, { name: "紫色", hex: "#8e44ad" }, { name: "朱色", hex: "#c0392b" }],
+    // 不宜: 水生木 → 水色(泄气)
+    unlucky: [{ name: "黑色", hex: "#2c3e50" }, { name: "蓝色", hex: "#3498db" }, { name: "玄色", hex: "#1a1a2e" }],
   },
   "水": {
     color: "#3498db", bg: "rgba(52,152,219,0.1)", desc: "水日主润下灵秀",
-    // 大吉: 金生水 → 金色
-    lucky: [{ name: "白色", hex: "#ffffff" }, { name: "银色", hex: "#c0c0c0" }, { name: "金色", hex: "#d4af37" }],
+    // 大吉: 水生木 → 木色
+    lucky: [{ name: "青色", hex: "#2ecc8f" }, { name: "绿色", hex: "#27ae60" }, { name: "翠色", hex: "#16a085" }],
     // 次吉: 比和 → 水色
     secondary: [{ name: "黑色", hex: "#2c3e50" }, { name: "蓝色", hex: "#3498db" }, { name: "玄色", hex: "#1a1a2e" }],
-    // 不宜: 水生木 → 木色(泄气)
-    unlucky: [{ name: "青色", hex: "#2ecc8f" }, { name: "绿色", hex: "#27ae60" }, { name: "翠色", hex: "#16a085" }],
+    // 不宜: 金生水 → 金色(泄气)
+    unlucky: [{ name: "白色", hex: "#ffffff" }, { name: "银色", hex: "#c0c0c0" }, { name: "金色", hex: "#d4af37" }],
   },
   "火": {
     color: "#e74c3c", bg: "rgba(231,76,60,0.1)", desc: "火日主炎上炽热",
-    // 大吉: 木生火 → 木色
-    lucky: [{ name: "青色", hex: "#2ecc8f" }, { name: "绿色", hex: "#27ae60" }, { name: "翠色", hex: "#16a085" }],
+    // 大吉: 火生土 → 土色
+    lucky: [{ name: "黄色", hex: "#e6c84c" }, { name: "棕色", hex: "#8b6914" }, { name: "褐色", hex: "#6b4226" }],
     // 次吉: 比和 → 火色
     secondary: [{ name: "红色", hex: "#e74c3c" }, { name: "紫色", hex: "#8e44ad" }, { name: "朱色", hex: "#c0392b" }],
-    // 不宜: 火生土 → 土色(泄气)
-    unlucky: [{ name: "黄色", hex: "#e6c84c" }, { name: "棕色", hex: "#8b6914" }, { name: "褐色", hex: "#6b4226" }],
+    // 不宜: 木生火 → 木色(泄气)
+    unlucky: [{ name: "青色", hex: "#2ecc8f" }, { name: "绿色", hex: "#27ae60" }, { name: "翠色", hex: "#16a085" }],
   },
   "土": {
     color: "#8b6914", bg: "rgba(139,105,20,0.1)", desc: "土日主承载厚德",
-    // 大吉: 火生土 → 火色
-    lucky: [{ name: "红色", hex: "#e74c3c" }, { name: "紫色", hex: "#8e44ad" }, { name: "朱色", hex: "#c0392b" }],
+    // 大吉: 土生金 → 金色
+    lucky: [{ name: "白色", hex: "#ffffff" }, { name: "银色", hex: "#c0c0c0" }, { name: "金色", hex: "#d4af37" }],
     // 次吉: 比和 → 土色
     secondary: [{ name: "黄色", hex: "#e6c84c" }, { name: "棕色", hex: "#8b6914" }, { name: "褐色", hex: "#6b4226" }],
-    // 不宜: 土生金 → 金色(泄气)
-    unlucky: [{ name: "白色", hex: "#ffffff" }, { name: "银色", hex: "#c0c0c0" }, { name: "金色", hex: "#d4af37" }],
+    // 不宜: 火生土 → 火色(泄气)
+    unlucky: [{ name: "红色", hex: "#e74c3c" }, { name: "紫色", hex: "#8e44ad" }, { name: "朱色", hex: "#c0392b" }],
   },
 };
 
