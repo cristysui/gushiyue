@@ -95,7 +95,7 @@ export default function FloatingHeader({ today, onExpand, onNavClick }: Floating
           {/* 顶部导航（仅非移动端） */}
           {!isMobile && (
             <nav className="flex items-center gap-4">
-              {["书阁", "日签", "日记", "设置"].map((item) => (
+              {["书阁", "日签", "对话", "吾省", "设置"].map((item) => (
                 <span
                   key={item}
                   className="text-nav text-sm cursor-pointer transition-opacity hover:opacity-100 opacity-80"

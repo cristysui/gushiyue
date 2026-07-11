@@ -10,6 +10,7 @@ import FloatingHeader from "@/components/FloatingHeader";
 import BookPavilion from "@/components/BookPavilion";
 import JournalNotes from "@/components/JournalNotes";
 import DailyFortune from "@/components/DailyFortune";
+import SelfReflection from "@/components/SelfReflection";
 import StudyScene from "@/components/scene/StudyScene";
 import DebugOverlay from "@/components/scene/DebugOverlay";
 import { useAuth } from "@/lib/auth";
@@ -94,6 +95,7 @@ export default function HomePage() {
   const [bookPavilionOpen, setBookPavilionOpen] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
   const [fortuneOpen, setFortuneOpen] = useState(false);
+  const [selfReflectionOpen, setSelfReflectionOpen] = useState(false);
   const sceneContainerRef = useRef<HTMLDivElement>(null);
 
   const { user, accessToken, signIn, signUp, signOut } = useAuth();
@@ -204,8 +206,9 @@ export default function HomePage() {
           today={today}
           onNavClick={(item) => {
             if (item === "书阁") setBookPavilionOpen(true);
-            else if (item === "日记") setJournalOpen(true);
+            else if (item === "对话") setJournalOpen(true);
             else if (item === "日签") setFortuneOpen(true);
+            else if (item === "吾省") setSelfReflectionOpen(true);
           }}
         />
       )}
@@ -225,7 +228,8 @@ export default function HomePage() {
           {[
             { label: "书阁", icon: "阁", action: () => setBookPavilionOpen(true) },
             { label: "日签", icon: "签", action: () => setFortuneOpen(true) },
-            { label: "日记", icon: "记", action: () => setJournalOpen(true) },
+            { label: "对话", icon: "话", action: () => setJournalOpen(true) },
+            { label: "吾省", icon: "省", action: () => setSelfReflectionOpen(true) },
           ].map((tab) => (
             <button
               key={tab.label}
@@ -257,6 +261,9 @@ export default function HomePage() {
 
       {/* ===== 日签模块 ===== */}
       <DailyFortune open={fortuneOpen} onClose={() => setFortuneOpen(false)} />
+
+      {/* ===== 吾省模块 ===== */}
+      <SelfReflection open={selfReflectionOpen} onClose={() => setSelfReflectionOpen(false)} />
 
       {/* ===== 右上角：用户区（非 Debug 时显示）===== */}
       {!debugMode && (
